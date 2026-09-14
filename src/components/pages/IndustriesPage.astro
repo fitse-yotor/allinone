@@ -1,0 +1,83 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHead from '../PageHead.astro';
+import ContactBand from '../ContactBand.astro';
+import { getCopy, type Locale } from '../../i18n/utils';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getCopy(locale);
+const ind = t.industries;
+---
+
+<Base title={ind.title} description={ind.description}>
+  <PageHead label={ind.label} heading={ind.heading} lede={ind.lede} />
+
+  <section class="section" aria-label={ind.title}>
+    <div class="page">
+      <table class="sectors">
+        <caption class="visually-hidden">{ind.title}</caption>
+        <tbody>
+          {
+            ind.groups.map((g) => (
+              <tr>
+                <th scope="row">{g.name}</th>
+                <td>{g.items.join(', ')}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="section section--deep">
+    <div class="page split split--wide">
+      <span></span>
+      <p class="prose sectors__note">{ind.note}</p>
+    </div>
+  </section>
+
+  <ContactBand locale={locale} />
+</Base>
+
+<style>
+  .sectors { border-top: var(--rule-hair) solid var(--c-ink); }
+
+  .sectors th,
+  .sectors td {
+    display: block;
+    padding: 0;
+    border: 0;
+  }
+
+  .sectors tr {
+    display: block;
+    padding-block: var(--space-5);
+    border-bottom: var(--rule-hair) solid var(--c-rule);
+  }
+
+  .sectors th {
+    font-size: var(--t-2);
+    font-weight: var(--w-semibold);
+    line-height: var(--lh-tight);
+    margin-bottom: var(--space-2);
+  }
+
+  .sectors td { color: var(--c-ink-soft); font-size: var(--t-1); line-height: var(--lh-snug); }
+
+  @media (min-width: 62rem) {
+    .sectors tr {
+      display: grid;
+      grid-template-columns: 16rem minmax(0, 1fr);
+      column-gap: var(--space-8);
+      align-items: baseline;
+    }
+    .sectors th { margin-bottom: 0; }
+  }
+
+  .sectors__note { font-size: var(--t-1); line-height: var(--lh-body); }
+</style>

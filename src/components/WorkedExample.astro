@@ -1,0 +1,68 @@
+---
+interface Step {
+  n: string;
+  title: string;
+  text: string;
+}
+
+interface Props {
+  steps: Step[];
+}
+
+const { steps } = Astro.props;
+---
+
+<ol class="walk">
+  {
+    steps.map((step) => (
+      <li class="walk__step">
+        <span class="walk__num numeral" aria-hidden="true">{step.n}</span>
+        <div class="walk__text">
+          <h3 class="walk__title">{step.title}</h3>
+          <p class="soft">{step.text}</p>
+        </div>
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  .walk {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: var(--rule-hair) solid var(--c-ink);
+  }
+
+  .walk__step {
+    display: grid;
+    grid-template-columns: var(--space-8) minmax(0, 1fr);
+    gap: var(--space-4);
+    padding-block: var(--space-5);
+    border-bottom: var(--rule-hair) solid var(--c-rule);
+  }
+
+  .walk__num {
+    font-size: var(--t-1);
+    line-height: var(--lh-snug);
+  }
+
+  .walk__title {
+    font-size: var(--t-1);
+    line-height: var(--lh-snug);
+    margin-bottom: var(--space-2);
+  }
+
+  .walk__text p { max-width: var(--measure); }
+
+  /* Wide screens: two columns that read down, not across, so the sequence
+     stays unambiguous. */
+  @media (min-width: 62rem) {
+    .walk {
+      columns: 2;
+      column-gap: var(--space-8);
+    }
+
+    .walk__step { break-inside: avoid; }
+  }
+</style>

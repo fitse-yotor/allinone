@@ -1,0 +1,115 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHead from '../PageHead.astro';
+import ContactBand from '../ContactBand.astro';
+import { getCopy, type Locale } from '../../i18n/utils';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getCopy(locale);
+const a = t.about;
+---
+
+<Base title={a.title} description={a.description}>
+  <PageHead label={a.label} heading={a.heading} intro={a.intro} />
+
+  <section class="section section--navy on-navy" aria-label={`${a.missionLabel}, ${a.visionLabel}`}>
+    <div class="page purpose">
+      <div class="purpose__item">
+        <h2 class="label">{a.missionLabel}</h2>
+        <p class="purpose__text">{a.mission}</p>
+      </div>
+      <div class="purpose__item">
+        <h2 class="label">{a.visionLabel}</h2>
+        <p class="purpose__text">{a.vision}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="values-heading">
+    <div class="page split split--wide">
+      <div>
+        <h2 id="values-heading" class="label">{a.valuesLabel}</h2>
+        <p class="soft values__note">{a.valuesNote}</p>
+      </div>
+      <dl class="values">
+        {
+          a.values.map((v, i) => (
+            <div class="values__item">
+              <dt>
+                <span class="numeral">{String(i + 1).padStart(2, '0')}</span>
+                <span class="values__name">{v.name}</span>
+              </dt>
+              <dd class="soft">{v.text}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </section>
+
+  <ContactBand locale={locale} />
+</Base>
+
+<style>
+  .purpose {
+    display: grid;
+    gap: var(--space-8);
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .purpose__item {
+    padding-top: var(--space-4);
+    border-top: var(--rule-hair) solid var(--c-on-navy-soft);
+  }
+
+  .purpose__text {
+    margin-top: var(--space-4);
+    font-size: var(--t-3);
+    line-height: var(--lh-snug);
+    letter-spacing: var(--tracking-head);
+  }
+
+  @media (min-width: 62rem) {
+    .purpose { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--space-9); }
+  }
+
+  .values__note { margin-top: var(--space-3); max-width: 24ch; }
+
+  .values {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    column-gap: var(--space-8);
+    margin: 0;
+    border-top: var(--rule-hair) solid var(--c-ink);
+  }
+
+  .values__item {
+    padding-block: var(--space-5);
+    border-bottom: var(--rule-hair) solid var(--c-rule);
+  }
+
+  .values__item dt {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-4);
+    margin-bottom: var(--space-2);
+  }
+
+  .values__item dt .numeral { font-size: var(--t--1); }
+
+  .values__name {
+    font-size: var(--t-1);
+    font-weight: var(--w-semibold);
+    line-height: var(--lh-snug);
+  }
+
+  .values__item dd { margin: 0; max-width: var(--measure); }
+
+  @media (min-width: 62rem) {
+    .values { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+</style>

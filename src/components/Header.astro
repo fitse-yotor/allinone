@@ -1,0 +1,218 @@
+---
+import LangSwitch from './LangSwitch.astro';
+import { getCopy, localizePath, stripLocale, type Locale } from '../i18n/utils';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getCopy(locale);
+const current = stripLocale(Astro.url.pathname);
+---
+
+<header class="header">
+  <div class="page header__bar">
+    <a class="header__brand" href={localizePath('/', locale)}>
+      <span class="header__name">{t.company.name}</span>
+      <span class="header__descriptor">{t.company.descriptor}</span>
+    </a>
+
+    <button class="header__toggle" type="button" aria-expanded="false" aria-controls="site-nav" hidden>
+      <span class="header__toggle-open">{t.nav.menu}</span>
+      <span class="header__toggle-close">{t.nav.close}</span>
+    </button>
+
+    <nav class="header__nav" id="site-nav" aria-label={t.nav.primary}>
+      <ul class="header__list">
+        {
+          t.nav.items.map((item, i) => (
+            <li class:list={['header__item', { 'header__item--break': i === 3 }]}>
+              <a
+                class="header__link"
+                href={localizePath(item.path, locale)}
+                aria-current={current === item.path ? 'page' : undefined}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <LangSwitch locale={locale} />
+    </nav>
+  </div>
+</header>
+
+<script>
+  // Progressive disclosure for narrow screens. Without JavaScript the
+  // navigation stays visible and wraps, so nothing is ever unreachable.
+  const toggle = document.querySelector<HTMLButtonElement>('.header__toggle');
+  const nav = document.getElementById('site-nav');
+  if (toggle && nav) {
+    const narrow = window.matchMedia('(max-width: 61.99rem)');
+    const sync = () => {
+      toggle.hidden = !narrow.matches;
+      if (!narrow.matches) toggle.setAttribute('aria-expanded', 'false');
+    };
+    toggle.addEventListener('click', () => {
+      const open = toggle.getAttribute('aria-expanded') === 'true';
+      toggle.setAttribute('aria-expanded', String(!open));
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.focus();
+      }
+    });
+    narrow.addEventListener('change', sync);
+    sync();
+  }
+</script>
+
+<style>
+  .header {
+    border-bottom: var(--rule-hair) solid var(--c-rule-strong);
+    background: var(--c-paper);
+  }
+
+  .header__bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding-block: var(--space-4);
+  }
+
+  .header__brand {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    color: var(--c-ink);
+    text-decoration: none;
+  }
+
+  .header__name {
+    font-weight: var(--w-semibold);
+    font-size: var(--t-1);
+    line-height: var(--lh-tight);
+    letter-spacing: var(--tracking-head);
+  }
+
+  .header__descriptor {
+    font-family: var(--font-mono);
+    font-size: var(--t--1);
+    letter-spacing: var(--tracking-mono);
+    text-transform: uppercase;
+    color: var(--c-ink-soft);
+    line-height: var(--lh-snug);
+  }
+
+  .header__brand:hover .header__name {
+    text-decoration: underline;
+    text-decoration-thickness: var(--rule-thick);
+    text-underline-offset: 0.24em;
+  }
+
+  .header__toggle {
+    padding: var(--space-2) var(--space-4);
+    border: var(--rule-hair) solid var(--c-ink);
+    background: var(--c-paper);
+    color: var(--c-ink);
+    font-family: var(--font-mono);
+    font-size: var(--t--1);
+    font-weight: var(--w-medium);
+    letter-spacing: var(--tracking-mono);
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  .header__toggle:hover {
+    background: var(--c-ink);
+    color: var(--c-paper);
+  }
+
+  .header__toggle[hidden] { display: none; }
+  .header__toggle-close { display: none; }
+  .header__toggle[aria-expanded='true'] .header__toggle-open { display: none; }
+  .header__toggle[aria-expanded='true'] .header__toggle-close { display: inline; }
+
+  .header__nav {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-4) var(--space-6);
+    width: 100%;
+  }
+
+  .header__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-5);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .header__link {
+    display: inline-block;
+    padding-block: var(--space-1);
+    color: var(--c-ink);
+    font-size: var(--t-0);
+    text-decoration: none;
+  }
+
+  .header__link:hover {
+    text-decoration: underline;
+    text-decoration-thickness: var(--rule-thick);
+    text-underline-offset: 0.24em;
+  }
+
+  .header__link[aria-current='page'] {
+    text-decoration: underline;
+    text-decoration-color: var(--c-accent);
+    text-decoration-thickness: var(--rule-thick);
+    text-underline-offset: 0.24em;
+  }
+
+  /* Narrow screens with JavaScript: the list collapses behind the toggle as
+     a stacked, ruled list. */
+  @media (max-width: 61.99rem) {
+    :global(html.js) .header__toggle[aria-expanded='false'] ~ .header__nav { display: none; }
+
+    :global(html.js) .header__nav {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-5);
+      padding-bottom: var(--space-4);
+    }
+
+    :global(html.js) .header__list {
+      flex-direction: column;
+      gap: 0;
+    }
+
+    :global(html.js) .header__item {
+      border-top: var(--rule-hair) solid var(--c-rule);
+    }
+
+    :global(html.js) .header__link {
+      display: block;
+      padding-block: var(--space-3);
+    }
+  }
+
+  @media (min-width: 62rem) {
+    .header__bar { flex-wrap: nowrap; }
+    .header__nav {
+      width: auto;
+      flex-wrap: nowrap;
+    }
+    .header__list { flex-wrap: nowrap; }
+    .header__item--break {
+      padding-left: var(--space-5);
+      border-left: var(--rule-hair) solid var(--c-rule-strong);
+    }
+  }
+</style>

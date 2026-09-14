@@ -1,0 +1,65 @@
+---
+import { getCopy, localizePath, type Locale } from '../i18n/utils';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getCopy(locale);
+---
+
+<section class="section section--navy on-navy band" aria-labelledby="contact-band-heading">
+  <div class="page band__grid">
+    <div class="band__text">
+      <h2 id="contact-band-heading" class="band__heading">{t.contactBand.heading}</h2>
+      <p class="band__body soft">{t.contactBand.body}</p>
+      <p><a class="action" href={localizePath('/contact/', locale)}>{t.contactBand.action}</a></p>
+    </div>
+
+    <div class="band__phone">
+      <p class="label">{t.contactBand.phoneLabel}</p>
+      <a class="band__number" href={t.company.phoneHref}>{t.company.phone}</a>
+      <!-- TODO: email address, once a real mailbox is confirmed. -->
+    </div>
+  </div>
+</section>
+
+<style>
+  .band__grid {
+    display: grid;
+    gap: var(--space-7);
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .band__heading {
+    max-width: var(--measure-lead);
+    font-size: var(--t-5);
+  }
+
+  .band__body {
+    max-width: var(--measure);
+    margin-block: var(--space-5) var(--space-6);
+  }
+
+  .band__phone {
+    align-self: end;
+    padding-top: var(--space-5);
+    border-top: var(--rule-hair) solid var(--c-on-navy-soft);
+  }
+
+  .band__phone .label { margin-bottom: var(--space-2); }
+
+  .band__number {
+    color: var(--c-on-navy);
+    font-family: var(--font-mono);
+    font-size: var(--t-3);
+    font-variant-numeric: tabular-nums;
+    line-height: var(--lh-tight);
+    text-decoration-color: var(--c-accent);
+  }
+
+  @media (min-width: 62rem) {
+    .band__grid { grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); column-gap: var(--space-9); }
+  }
+</style>

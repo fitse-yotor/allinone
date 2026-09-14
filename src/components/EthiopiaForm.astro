@@ -1,0 +1,134 @@
+---
+/*
+  Hero figure. The static drawing below is rendered at build time from the
+  same outline the 3D scene extrudes, so it is the fallback in every case:
+  no JavaScript, no WebGL, prefers-reduced-motion, narrow or low-memory
+  devices, and Save-Data. Only a qualifying device loads Three.js, after the
+  page has finished loading, and swaps the drawing for the live scene.
+*/
+import outline from '../data/ethiopia-outline.json';
+
+interface Props {
+  label: string;
+  caption: string;
+}
+
+const { label, caption } = Astro.props;
+
+// Oblique drawing: the top face is foreshortened, the extrusion is swept
+// downward in a few steps to read as a solid edge.
+const W = 400;
+const H = 330;
+const TILT = 0.64;
+const DEPTH = 16;
+const pts = outline.points as [number, number][];
+const scale = W * 0.4;
+const toSvg = ([x, y]: [number, number], dy = 0) =>
+  `${(W / 2 - 10 + x * scale).toFixed(1)},${(H / 2 - 26 - y * scale * TILT + dy).toFixed(1)}`;
+const path = (dy = 0) => `M${pts.map((p) => toSvg(p, dy)).join('L')}Z`;
+const sweep = Array.from({ length: 8 }, (_, i) => DEPTH - (i * DEPTH) / 8);
+const shadow = `M${pts.map(([x, y]) => toSvg([x + 0.06, y - 0.14], DEPTH + 6)).join('L')}Z`;
+---
+
+<figure class="form" data-ethiopia>
+  <div class="form__stage" role="img" aria-label={label}>
+    <svg class="form__drawing" viewBox={`0 0 ${W} ${H}`} aria-hidden="true" focusable="false">
+      <path class="form__shadow" d={shadow} />
+      {sweep.map((dy) => <path class="form__side" d={path(dy)} />)}
+      <path class="form__top" d={path(0)} />
+    </svg>
+    <div class="form__live" data-ethiopia-live></div>
+  </div>
+  <figcaption class="label form__caption">{caption}</figcaption>
+</figure>
+
+<script>
+  type NavigatorHints = Navigator & { deviceMemory?: number; connection?: { saveData?: boolean } };
+
+  function qualifies(): boolean {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return false;
+    if (!window.matchMedia('(min-width: 62rem)').matches) return false;
+    const nav = navigator as NavigatorHints;
+    if (nav.deviceMemory !== undefined && nav.deviceMemory < 4) return false;
+    if (nav.connection?.saveData) return false;
+    try {
+      const probe = document.createElement('canvas');
+      return Boolean(probe.getContext('webgl2') ?? probe.getContext('webgl'));
+    } catch {
+      return false;
+    }
+  }
+
+  async function start() {
+    const figure = document.querySelector<HTMLElement>('[data-ethiopia]');
+    const live = figure?.querySelector<HTMLElement>('[data-ethiopia-live]');
+    if (!figure || !live || !qualifies()) return;
+    try {
+      const { mountEthiopia } = await import('../scenes/ethiopia');
+      mountEthiopia(live, () => figure.classList.add('is-live'));
+    } catch {
+      // Any failure leaves the static drawing in place.
+    }
+  }
+
+  const idle = (fn: () => void) => {
+    if (typeof window.requestIdleCallback === 'function') window.requestIdleCallback(fn, { timeout: 2000 });
+    else setTimeout(fn, 200);
+  };
+
+  if (document.readyState === 'complete') idle(start);
+  else window.addEventListener('load', () => idle(start), { once: true });
+</script>
+
+<style>
+  .form {
+    margin: 0;
+    width: 100%;
+    max-width: 32rem;
+    margin-inline: auto;
+  }
+
+  .form__stage {
+    position: relative;
+    aspect-ratio: 400 / 330;
+    max-width: 100%;
+  }
+
+  .form__drawing,
+  .form__live {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .form__live :global(canvas) {
+    width: 100%;
+    height: 100%;
+  }
+
+  .form__shadow { fill: var(--c-rule); }
+  .form__side { fill: var(--c-rule-strong); }
+  .form__top {
+    fill: var(--c-paper-deep);
+    stroke: var(--c-ink-soft);
+    stroke-width: 0.75;
+    stroke-linejoin: round;
+  }
+
+  /* The swap is instant: the drawing is replaced once the first 3D frame
+     exists, never cross-faded. */
+  .form__live { visibility: hidden; }
+  .form:global(.is-live) .form__live { visibility: visible; }
+  .form:global(.is-live) .form__drawing { visibility: hidden; }
+
+  .form__caption {
+    margin-top: var(--space-3);
+    padding-top: var(--space-3);
+    border-top: var(--rule-hair) solid var(--c-rule);
+  }
+
+  @media (max-width: 61.99rem) {
+    .form { max-width: 22rem; margin-inline: 0; }
+  }
+</style>

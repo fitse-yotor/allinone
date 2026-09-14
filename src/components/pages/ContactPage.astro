@@ -1,0 +1,180 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHead from '../PageHead.astro';
+import { getCopy, type Locale } from '../../i18n/utils';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getCopy(locale);
+const c = t.contact;
+const f = c.form;
+
+// TODO: Formspree endpoint, for example https://formspree.io/f/abcdwxyz.
+// Set PUBLIC_FORM_ENDPOINT at build time. Until it is set, production builds
+// ship the page without the form (phone only) rather than a form that posts
+// nowhere. Development builds still render it so the layout can be reviewed.
+const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT as string | undefined;
+const showForm = Boolean(endpoint) || import.meta.env.DEV;
+---
+
+<Base title={c.title} description={c.description}>
+  <PageHead label={c.label} heading={c.heading} lede={c.lede} />
+
+  <section class="section">
+    <div class="page contact">
+      <div class="contact__direct">
+        <p class="label">{c.phoneLabel}</p>
+        <a class="contact__phone" href={t.company.phoneHref}>{t.company.phone}</a>
+        {c.phoneNote && <p class="soft">{c.phoneNote}</p>}
+        <p class="soft">{t.company.country}</p>
+        <!-- TODO: real email address, once confirmed. -->
+        <!-- TODO: office address and map link, once supplied. -->
+      </div>
+
+      {
+        showForm && (
+          <form class="form" method="POST" action={endpoint ?? '#'} aria-labelledby="form-heading">
+            <h2 id="form-heading" class="form__heading">{c.formLabel}</h2>
+            <input type="hidden" name="_language" value={locale} />
+
+            <div class="form__row">
+              <label for="f-name">{f.name} <span class="soft">({f.required})</span></label>
+              <input id="f-name" name="name" type="text" autocomplete="name" required />
+            </div>
+
+            <div class="form__row">
+              <label for="f-org">{f.organization} <span class="soft">({f.required})</span></label>
+              <input id="f-org" name="organization" type="text" autocomplete="organization" required />
+            </div>
+
+            <div class="form__pair">
+              <div class="form__row">
+                <label for="f-email">{f.email} <span class="soft">({f.required})</span></label>
+                <input id="f-email" name="email" type="email" autocomplete="email" required />
+              </div>
+              <div class="form__row">
+                <label for="f-phone">{f.phone} <span class="soft">({f.optional})</span></label>
+                <input id="f-phone" name="phone" type="tel" autocomplete="tel" />
+              </div>
+            </div>
+
+            <div class="form__pair">
+              <div class="form__row">
+                <label for="f-sector">{f.sector}</label>
+                <select id="f-sector" name="sector">
+                  {f.sectorOptions.map((o, i) => <option value={i === 0 ? '' : o}>{o}</option>)}
+                </select>
+              </div>
+              <div class="form__row">
+                <label for="f-interest">{f.interest}</label>
+                <select id="f-interest" name="interest">
+                  {f.interestOptions.map((o, i) => <option value={i === 0 ? '' : o}>{o}</option>)}
+                </select>
+              </div>
+            </div>
+
+            <div class="form__row">
+              <label for="f-message">{f.message} <span class="soft">({f.required})</span></label>
+              <textarea id="f-message" name="message" rows="7" placeholder={f.messagePlaceholder} required></textarea>
+            </div>
+
+            <p><button class="action" type="submit">{f.submit}</button></p>
+
+            <div class="form__fallback">
+              <p class="label">{f.fallbackHeading}</p>
+              <p class="soft">{f.fallbackBody}</p>
+            </div>
+          </form>
+        )
+      }
+    </div>
+  </section>
+</Base>
+
+<style>
+  .contact {
+    display: grid;
+    gap: var(--space-8);
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  @media (min-width: 62rem) {
+    .contact { grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); column-gap: var(--space-9); }
+  }
+
+  .contact__direct > * + * { margin-top: var(--space-2); }
+
+  .contact__phone {
+    display: inline-block;
+    color: var(--c-ink);
+    font-family: var(--font-mono);
+    font-size: var(--t-3);
+    font-variant-numeric: tabular-nums;
+    line-height: var(--lh-tight);
+    text-decoration-color: var(--c-accent);
+  }
+
+  .form {
+    display: grid;
+    gap: var(--space-5);
+    padding-top: var(--space-5);
+    border-top: var(--rule-hair) solid var(--c-ink);
+  }
+
+  .form__heading { font-size: var(--t-2); }
+
+  .form__pair {
+    display: grid;
+    gap: var(--space-5);
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  @media (min-width: 45rem) {
+    .form__pair { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+
+  .form__row {
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  label { font-weight: var(--w-medium); line-height: var(--lh-snug); }
+  label .soft { font-weight: var(--w-regular); }
+
+  input,
+  select,
+  textarea {
+    width: 100%;
+    padding: var(--space-3);
+    border: var(--rule-hair) solid var(--c-rule-strong);
+    border-radius: 0;
+    background: var(--c-paper);
+    color: var(--c-ink);
+    font: inherit;
+    line-height: var(--lh-snug);
+  }
+
+  input:hover,
+  select:hover,
+  textarea:hover { border-color: var(--c-ink); }
+
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    border-color: var(--c-ink);
+    outline-offset: 0;
+  }
+
+  textarea { resize: vertical; }
+  textarea::placeholder { color: var(--c-ink-soft); }
+
+  .form__fallback {
+    padding-top: var(--space-4);
+    border-top: var(--rule-hair) solid var(--c-rule);
+  }
+
+  .form__fallback .label { margin-bottom: var(--space-1); }
+</style>

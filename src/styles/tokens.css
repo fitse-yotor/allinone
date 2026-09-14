@@ -1,0 +1,119 @@
+/*
+  AllInOne Technology: design tokens.
+  This is the ONLY file permitted to declare raw pixel and colour values.
+  Every component consumes these variables. tools/check-slop.mjs enforces that.
+
+  Deliberate exclusions, per brief:
+    no gradients, no translucent surfaces, no accent-coloured borders,
+    no serif family, no italic as decoration, no overlay texture.
+*/
+
+:root {
+  /* ---- Colour ------------------------------------------------------------
+     Six values plus two rule tones. Measured contrast against their ground
+     is noted so later edits cannot quietly break accessibility.           */
+
+  --c-paper:        #f7f6f3;  /* primary ground */
+  --c-paper-deep:   #efedE7;  /* secondary ground, opaque, for inset blocks */
+  --c-ink:          #12161c;  /* body text on paper, 16.9:1 */
+  --c-ink-soft:     #4a515b;  /* secondary text on paper, 7.4:1 */
+  --c-rule:         #d8d5ce;  /* hairline on paper */
+  --c-rule-strong:  #b4afa4;  /* emphasised hairline on paper */
+
+  --c-navy:         #0a1a2f;  /* dark band ground */
+  --c-navy-deep:    #06111f;  /* dark band inset */
+  --c-on-navy:      #edeff2;  /* body text on navy, 15.2:1 */
+  --c-on-navy-soft: #a8b2c0;  /* secondary text on navy, 8.2:1 */
+  --c-rule-navy:    #22303f;  /* hairline on navy */
+
+  --c-link:         #7a4208;  /* text-sized accent on paper, 7.5:1 (AAA) */
+  --c-link-navy:    #e2a355;  /* text-sized accent on navy, 8.5:1 */
+  --c-accent:       #c8761b;  /* graphic accent: rules, large numerals, marks.
+                                 3.2:1 on paper, so never used for small text */
+
+  --c-focus:        #0a1a2f;
+  --c-focus-navy:   #e2a355;
+
+  /* ---- Spacing scale ----------------------------------------------------
+     Base 4px. These eleven steps are the only permitted spacing values.   */
+
+  --space-1:   4px;
+  --space-2:   8px;
+  --space-3:   12px;
+  --space-4:   16px;
+  --space-5:   24px;
+  --space-6:   32px;
+  --space-7:   48px;
+  --space-8:   64px;
+  --space-9:   96px;
+  --space-10:  128px;
+  --space-11:  192px;
+
+  /* Section vertical rhythm, fixed. Mobile value; desktop raised below. */
+  --section-y: var(--space-9);
+
+  /* ---- Type ------------------------------------------------------------
+     1.2 modular scale from a 17px body. Mono carries the engineering
+     character: section numerals, labels, capability markers.             */
+
+  --font-sans: "IBM Plex Sans Variable", "IBM Plex Sans",
+               ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo,
+               Consolas, monospace;
+  --font-ethiopic: "Noto Sans Ethiopic Variable", "Noto Sans Ethiopic", "Nyala",
+                   "Abyssinica SIL", sans-serif;
+
+  --t--1: 0.8125rem;  /* 13px, mono labels */
+  --t-0:  1.0625rem;  /* 17px, body */
+  --t-1:  1.25rem;    /* 20px */
+  --t-2:  1.5rem;     /* 24px */
+  --t-3:  1.8125rem;  /* 29px */
+  --t-4:  2.1875rem;  /* 35px */
+  --t-5:  2.625rem;   /* 42px */
+  --t-6:  3.1875rem;  /* 51px */
+
+  --lh-tight: 1.12;
+  --lh-snug:  1.28;
+  --lh-body:  1.62;
+
+  --tracking-mono: 0.08em;
+  --tracking-head: -0.015em;
+
+  --w-semibold: 600;
+  --w-medium:   500;
+  --w-regular:  400;
+
+  /* ---- Measure and layout --------------------------------------------- */
+
+  --measure:      68ch;  /* body text cap */
+  --measure-lead: 34ch;  /* large display text cap */
+  --page-max:     1240px;
+  --page-gutter:  var(--space-5);
+
+  --rule-hair: 1px;
+  --rule-thick: 2px;
+  --focus-ring: 2px;
+  --focus-offset: 3px;
+}
+
+@media (min-width: 62rem) {
+  :root {
+    --section-y: var(--space-10);
+    --page-gutter: var(--space-7);
+    --t-5: 3.1875rem;
+    --t-6: 3.8125rem;
+  }
+}
+
+/* Amharic runs in Noto Sans Ethiopic. Ethiopic glyphs sit optically smaller
+   and taller than Plex, so the locale gets its own size and leading rather
+   than a blind family substitution. */
+:root:lang(am) {
+  --font-sans: var(--font-ethiopic);
+  --t-0: 1.125rem;
+  --lh-body: 1.75;
+  --lh-snug: 1.4;
+  --lh-tight: 1.25;
+  --tracking-head: 0;
+  --measure: 60ch;
+}

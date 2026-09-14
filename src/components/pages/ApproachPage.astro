@@ -1,0 +1,84 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHead from '../PageHead.astro';
+import ContactBand from '../ContactBand.astro';
+import { getCopy, type Locale } from '../../i18n/utils';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getCopy(locale);
+const a = t.approach;
+---
+
+<Base title={a.title} description={a.description}>
+  <PageHead label={a.label} heading={a.heading} lede={a.lede} intro={a.intro} />
+
+  <section class="section" aria-label={a.label}>
+    <div class="page">
+      <ol class="stages">
+        {
+          a.steps.map((step) => (
+            <li class="stages__item">
+              <span class="stages__num numeral" aria-hidden="true">{step.n}</span>
+              <h2 class="stages__name">{step.name}</h2>
+              <p class="stages__text">{step.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="section section--deep" aria-labelledby="consulting-heading">
+    <div class="page split split--wide">
+      <span></span>
+      <div class="note">
+        <h2 id="consulting-heading">{a.consultingNote.heading}</h2>
+        <p class="prose">{a.consultingNote.body}</p>
+      </div>
+    </div>
+  </section>
+
+  <ContactBand locale={locale} />
+</Base>
+
+<style>
+  .stages {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: var(--rule-hair) solid var(--c-ink);
+  }
+
+  .stages__item {
+    display: grid;
+    grid-template-columns: var(--space-8) minmax(0, 1fr);
+    column-gap: var(--space-4);
+    row-gap: var(--space-2);
+    padding-block: var(--space-6);
+    border-bottom: var(--rule-hair) solid var(--c-rule);
+  }
+
+  .stages__num {
+    grid-row: span 2;
+    font-size: var(--t-2);
+    line-height: var(--lh-tight);
+  }
+
+  .stages__name { font-size: var(--t-3); }
+  .stages__text { max-width: var(--measure); color: var(--c-ink-soft); }
+
+  @media (min-width: 62rem) {
+    .stages__item {
+      grid-template-columns: 16rem minmax(0, 4fr) minmax(0, 7fr);
+      column-gap: var(--space-8);
+      align-items: baseline;
+    }
+    .stages__num { grid-row: auto; }
+  }
+
+  .note > * + * { margin-top: var(--space-4); }
+</style>

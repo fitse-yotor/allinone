@@ -1,0 +1,58 @@
+---
+interface Props {
+  caption: string;
+  head: string[];
+  rows: string[][];
+}
+
+const { caption, head, rows } = Astro.props;
+const last = rows.length - 1;
+---
+
+<div class="scroll-x" role="region" aria-label={caption} tabindex="0">
+  <table class="compare">
+    <caption class="label">{caption}</caption>
+    <thead>
+      <tr>{head.map((h) => <th scope="col">{h}</th>)}</tr>
+    </thead>
+    <tbody>
+      {
+        rows.map((row, i) => (
+          <tr class:list={{ 'compare__ours': i === last }}>
+            <th scope="row">{row[0]}</th>
+            {row.slice(1).map((cell) => <td>{cell}</td>)}
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</div>
+
+<style>
+  .compare {
+    min-width: 40rem;
+  }
+
+  caption {
+    padding-bottom: var(--space-4);
+    text-align: left;
+  }
+
+  tbody th {
+    width: 26%;
+    font-weight: var(--w-medium);
+  }
+
+  td { color: var(--c-ink-soft); }
+
+  /* The AllInOne row: heavier ink rule above, full-contrast text. No fill,
+     no coloured border, so the emphasis stays typographic. */
+  .compare__ours th,
+  .compare__ours td {
+    border-top: var(--space-1) solid var(--c-ink);
+    border-bottom-color: var(--c-ink);
+    color: var(--c-ink);
+  }
+
+  .compare__ours th { font-weight: var(--w-semibold); }
+</style>

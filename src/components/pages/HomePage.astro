@@ -1,0 +1,240 @@
+---
+/*
+  Home page body, shared by / and /am/. Route files only pick the locale.
+*/
+import Base from '../../layouts/Base.astro';
+import PracticeSection from '../PracticeSection.astro';
+import CapabilityList from '../CapabilityList.astro';
+import LifecycleRule from '../LifecycleRule.astro';
+import ComparisonTable from '../ComparisonTable.astro';
+import WorkedExample from '../WorkedExample.astro';
+import ContactBand from '../ContactBand.astro';
+import EthiopiaForm from '../EthiopiaForm.astro';
+import { getCopy, localizePath, type Locale } from '../../i18n/utils';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getCopy(locale);
+const h = t.home;
+const variants = ['split', 'broad', 'reverse'] as const;
+---
+
+<Base title={h.title} description={h.description} isHome>
+  <!-- 1. Hero -->
+  <section class="hero section section--flush" aria-labelledby="hero-heading">
+    <div class="page hero__grid">
+      <div class="hero__text">
+        <h1 id="hero-heading" class="hero__heading">{h.hero.heading}</h1>
+        <p class="hero__body soft">{h.hero.body}</p>
+        <p class="hero__actions">
+          <a class="action" href={localizePath('/contact/', locale)}>{h.hero.actionPrimary}</a>
+          <a class="action action--quiet" href={localizePath('/approach/', locale)}>{h.hero.actionSecondary}</a>
+        </p>
+      </div>
+      <div class="hero__figure">
+        <EthiopiaForm label={h.hero.sceneLabel} caption={h.hero.sceneCaption} />
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. Positioning -->
+  <section class="section" aria-labelledby="positioning-label">
+    <div class="page split split--wide">
+      <p id="positioning-label" class="label">{h.positioning.label}</p>
+      <div>
+        <p class="statement">{h.positioning.statement}</p>
+        <div class="questions">
+          <p class="label">{h.positioning.questionsLabel}</p>
+          <ol class="questions__list">
+            {h.positioning.questions.map((q, i) => (
+              <li><span class="numeral">{String(i + 1).padStart(2, '0')}</span><span>{q}</span></li>
+            ))}
+          </ol>
+          <p class="questions__note">{h.positioning.questionsNote}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Practices -->
+  <section class="section" aria-labelledby="practices-heading">
+    <div class="page">
+      <div class="split split--wide section-head">
+        <p class="label">{h.practices.label}</p>
+        <h2 id="practices-heading">{h.practices.heading}</h2>
+      </div>
+      {
+        h.practices.items.map((p, i) => (
+          <PracticeSection
+            locale={locale}
+            num={p.num}
+            name={p.name}
+            path={p.path}
+            tagline={p.tagline}
+            body={p.body}
+            capabilities={p.capabilities}
+            capabilitiesLabel={h.practices.capabilitiesLabel}
+            readMore={h.practices.readMore}
+            variant={variants[i] ?? 'split'}
+          />
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- 4. Coverage -->
+  <section class="section section--deep" aria-labelledby="coverage-heading">
+    <div class="page split split--wide">
+      <p class="label">{h.coverage.label}</p>
+      <div class="stack">
+        <h2 id="coverage-heading">{h.coverage.heading}</h2>
+        <p class="prose">{h.coverage.body}</p>
+        <ComparisonTable caption={h.coverage.table.caption} head={h.coverage.table.head} rows={h.coverage.table.rows} />
+        <p class="coverage__note">{h.coverage.note}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. Lifecycle -->
+  <section class="section" aria-labelledby="lifecycle-heading">
+    <div class="page stack">
+      <div class="split split--wide">
+        <p class="label">{h.lifecycle.label}</p>
+        <div class="stack">
+          <h2 id="lifecycle-heading">{h.lifecycle.heading}</h2>
+          <p class="prose soft">{h.lifecycle.body}</p>
+        </div>
+      </div>
+      <LifecycleRule steps={h.lifecycle.steps} />
+      <p><a href={localizePath('/approach/', locale)}>{h.lifecycle.action}</a></p>
+    </div>
+  </section>
+
+  <!-- 6. Worked example -->
+  <section class="section" aria-labelledby="example-heading">
+    <div class="page stack">
+      <div class="split split--wide">
+        <p class="label">{h.example.label}</p>
+        <div class="stack">
+          <h2 id="example-heading">{h.example.heading}</h2>
+          <p class="prose">{h.example.body}</p>
+        </div>
+      </div>
+      <WorkedExample steps={h.example.steps} />
+      <div class="split split--wide">
+        <span></span>
+        <p class="example__close">{h.example.close}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. Supply and integration -->
+  <section class="section section--deep" aria-labelledby="supply-heading">
+    <div class="page split split--wide">
+      <p class="label">{h.supply.label}</p>
+      <div class="supply">
+        <div class="stack">
+          <h2 id="supply-heading">{h.supply.heading}</h2>
+          <p class="prose">{h.supply.body}</p>
+        </div>
+        <CapabilityList items={h.supply.items} columns={2} />
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. Contact band -->
+  <ContactBand locale={locale} />
+</Base>
+
+<style>
+  .hero { padding-block: var(--space-8) var(--space-9); }
+
+  .hero__grid {
+    display: grid;
+    gap: var(--space-7);
+    grid-template-columns: minmax(0, 1fr);
+    align-items: center;
+  }
+
+  .hero__heading { max-width: 20ch; }
+  .hero__body { max-width: var(--measure); margin-top: var(--space-5); font-size: var(--t-1); line-height: var(--lh-body); }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-6);
+  }
+
+  @media (min-width: 62rem) {
+    .hero { padding-block: var(--space-9) var(--space-10); }
+    .hero__grid { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); column-gap: var(--space-8); }
+  }
+
+  .section-head { margin-bottom: var(--space-7); }
+
+  .stack > * + * { margin-top: var(--space-5); }
+
+  .statement {
+    max-width: 40ch;
+    font-size: var(--t-3);
+    line-height: var(--lh-snug);
+    letter-spacing: var(--tracking-head);
+  }
+
+  .questions {
+    margin-top: var(--space-8);
+    padding-top: var(--space-5);
+    border-top: var(--rule-hair) solid var(--c-rule-strong);
+  }
+
+  .questions__list {
+    display: grid;
+    gap: var(--space-3);
+    margin: var(--space-4) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .questions__list li {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-4);
+    font-size: var(--t-1);
+    line-height: var(--lh-snug);
+  }
+
+  .questions__list .numeral { font-size: var(--t--1); }
+
+  .questions__note {
+    max-width: var(--measure);
+    margin-top: var(--space-5);
+    font-weight: var(--w-medium);
+  }
+
+  .coverage__note {
+    font-size: var(--t-1);
+    font-weight: var(--w-medium);
+    line-height: var(--lh-snug);
+  }
+
+  .example__close {
+    max-width: var(--measure);
+    font-size: var(--t-1);
+    font-weight: var(--w-medium);
+    line-height: var(--lh-snug);
+  }
+
+  .supply {
+    display: grid;
+    gap: var(--space-7);
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  @media (min-width: 62rem) {
+    .supply { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); column-gap: var(--space-8); }
+  }
+</style>

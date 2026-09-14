@@ -1,0 +1,56 @@
+---
+interface Props {
+  items: string[];
+  columns?: 1 | 2 | 3;
+  onNavy?: boolean;
+}
+
+const { items, columns = 2, onNavy = false } = Astro.props;
+---
+
+<ul class:list={['caps', `caps--${columns}`, { 'caps--navy': onNavy }]}>
+  {items.map((item) => <li class="caps__item">{item}</li>)}
+</ul>
+
+<style>
+  .caps {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    column-gap: var(--space-6);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: var(--rule-hair) solid var(--c-rule-strong);
+  }
+
+  .caps__item {
+    display: flex;
+    gap: var(--space-3);
+    padding-block: var(--space-3);
+    border-bottom: var(--rule-hair) solid var(--c-rule);
+    line-height: var(--lh-snug);
+  }
+
+  /* A short mono rule as the marker, instead of a bullet or an icon. */
+  .caps__item::before {
+    content: '';
+    flex: none;
+    width: var(--space-3);
+    height: var(--rule-hair);
+    margin-top: 0.7em;
+    background: var(--c-ink-soft);
+  }
+
+  .caps--navy { border-top-color: var(--c-on-navy-soft); }
+  .caps--navy .caps__item { border-bottom-color: var(--c-rule-navy); }
+  .caps--navy .caps__item::before { background: var(--c-on-navy-soft); }
+
+  @media (min-width: 45rem) {
+    .caps--2,
+    .caps--3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+
+  @media (min-width: 62rem) {
+    .caps--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+</style>

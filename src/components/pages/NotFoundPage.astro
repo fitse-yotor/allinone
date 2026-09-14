@@ -1,0 +1,40 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCopy, localizePath, type Locale } from '../../i18n/utils';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getCopy(locale);
+const nf = t.notFound;
+---
+
+<Base title={nf.title} description={nf.description} noindex>
+  <section class="section section--flush missing">
+    <div class="page split split--wide">
+      <p class="label">{nf.label}</p>
+      <div class="missing__body">
+        <h1>{nf.heading}</h1>
+        <p class="prose soft">{nf.body}</p>
+        <ul class="plain-list missing__links">
+          {
+            t.home.practices.items.map((p) => (
+              <li>
+                <span class="numeral">{p.num}</span> <a href={localizePath(p.path, locale)}>{p.name}</a>
+              </li>
+            ))
+          }
+        </ul>
+        <p><a class="action" href={localizePath('/', locale)}>{nf.action}</a></p>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .missing { padding-block: var(--space-9) var(--space-10); }
+  .missing__body > * + * { margin-top: var(--space-6); }
+  .missing__links { display: grid; gap: var(--space-2); font-size: var(--t-1); }
+</style>

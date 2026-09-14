@@ -1,0 +1,62 @@
+---
+import { getCopy, otherLocale, switchPath, htmlLang, type Locale } from '../i18n/utils';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getCopy(locale);
+const target = otherLocale(locale);
+const href = switchPath(Astro.url.pathname, target);
+---
+
+<div class="lang" role="group" aria-label={t.nav.langSwitchLabel}>
+  <span class="lang__current" aria-current="true">{t.localeName}</span>
+  <a class="lang__other" href={href} hreflang={htmlLang[target]} lang={htmlLang[target]} title={t.nav.langSwitchTo}>
+    {t.otherLocaleName}
+  </a>
+</div>
+
+<style>
+  .lang {
+    display: flex;
+    align-items: stretch;
+    border: var(--rule-hair) solid var(--c-rule-strong);
+    font-size: var(--t--1);
+    line-height: var(--lh-snug);
+  }
+
+  .lang__current,
+  .lang__other {
+    padding: var(--space-2) var(--space-3);
+  }
+
+  .lang__current {
+    background: var(--c-ink);
+    color: var(--c-paper);
+    font-weight: var(--w-medium);
+  }
+
+  .lang__other {
+    color: var(--c-ink);
+    text-decoration: none;
+  }
+
+  .lang__other:hover {
+    background: var(--c-paper-deep);
+    text-decoration: underline;
+    text-underline-offset: 0.24em;
+  }
+
+  .lang__other:lang(am) { font-family: var(--font-ethiopic); }
+  .lang__other:lang(en) { font-family: "IBM Plex Sans Variable", var(--font-sans); }
+
+  @media (min-width: 62rem) {
+    .lang { align-self: center; }
+  }
+
+  @media (max-width: 61.99rem) {
+    .lang { align-self: flex-start; }
+  }
+</style>

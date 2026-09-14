@@ -1,0 +1,53 @@
+---
+/* Opening block for every inner page. Headline first, no badge above it. */
+
+interface Props {
+  label: string;
+  heading: string;
+  lede?: string;
+  intro?: string[];
+}
+
+const { label, heading, lede, intro = [] } = Astro.props;
+---
+
+<section class="head section section--flush">
+  <div class="page split split--wide">
+    <p class="label head__label">{label}</p>
+    <div>
+      <h1 class="head__heading">{heading}</h1>
+      {lede && <p class="lede head__lede">{lede}</p>}
+      {
+        intro.length > 0 && (
+          <div class="prose head__intro">
+            {intro.map((para) => <p>{para}</p>)}
+          </div>
+        )
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .head { padding-block: var(--space-8) var(--space-9); }
+
+  .head__heading { max-width: 22ch; }
+
+  .head__lede {
+    margin-top: var(--space-5);
+    max-width: 40ch;
+    color: var(--c-ink-soft);
+  }
+
+  .head__intro {
+    margin-top: var(--space-7);
+    padding-top: var(--space-5);
+    border-top: var(--rule-hair) solid var(--c-rule-strong);
+  }
+
+  /* On wide screens the label aligns to the heading's cap height. */
+  @media (min-width: 62rem) {
+    .head { padding-block: var(--space-9) var(--space-10); }
+    .head__label { padding-top: var(--space-3); }
+  }
+</style>

@@ -1,0 +1,26 @@
+{
+  "name": "allinone-tech",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "check:slop": "node tools/check-slop.mjs"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "3.7.4",
+    "@fontsource-variable/ibm-plex-sans": "5.3.0",
+    "@fontsource-variable/noto-sans-ethiopic": "5.3.0",
+    "@fontsource/ibm-plex-mono": "5.3.0",
+    "astro": "7.3.2",
+    "three": "0.186.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.10",
+    "@types/three": "0.186.0",
+    "typescript": "^6.0.0"
+  }
+}

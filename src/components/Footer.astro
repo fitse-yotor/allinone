@@ -1,0 +1,112 @@
+---
+import { getCopy, localizePath, type Locale } from '../i18n/utils';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getCopy(locale);
+const practices = t.nav.items.slice(0, 3);
+const company = t.nav.items.slice(3);
+const year = new Date().getFullYear();
+---
+
+<footer class="footer section--navy on-navy">
+  <div class="page footer__grid">
+    <div class="footer__lead">
+      <p class="footer__name">{t.company.name}</p>
+      <p class="footer__statement soft">{t.footer.statement}</p>
+    </div>
+
+    <nav class="footer__col" aria-label={t.footer.practicesLabel}>
+      <p class="label">{t.footer.practicesLabel}</p>
+      <ul class="plain-list footer__links">
+        {practices.map((item) => <li><a href={localizePath(item.path, locale)}>{item.label}</a></li>)}
+      </ul>
+    </nav>
+
+    <nav class="footer__col" aria-label={t.footer.companyLabel}>
+      <p class="label">{t.footer.companyLabel}</p>
+      <ul class="plain-list footer__links">
+        {company.map((item) => <li><a href={localizePath(item.path, locale)}>{item.label}</a></li>)}
+      </ul>
+    </nav>
+
+    <div class="footer__col">
+      <p class="label">{t.footer.contactLabel}</p>
+      <dl class="footer__contact">
+        <dt class="soft">{t.footer.phoneLabel}</dt>
+        <dd><a href={t.company.phoneHref} class="footer__phone">{t.company.phone}</a></dd>
+        <!-- TODO: email address, once a real mailbox is confirmed. The old site's mail@allinone.com is a placeholder. -->
+        <!-- TODO: office address, once supplied. -->
+      </dl>
+      <p class="soft">{t.company.country}</p>
+    </div>
+  </div>
+
+  <div class="page footer__base">
+    <p class="soft">&copy; {year} {t.company.name}. {t.footer.rights}</p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    padding-block: var(--space-9) var(--space-6);
+  }
+
+  .footer__grid {
+    display: grid;
+    gap: var(--space-7);
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 45rem) {
+    .footer__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .footer__lead { grid-column: 1 / -1; }
+  }
+
+  @media (min-width: 62rem) {
+    .footer__grid { grid-template-columns: minmax(0, 2fr) repeat(3, minmax(0, 1fr)); }
+    .footer__lead { grid-column: auto; }
+  }
+
+  .footer__name {
+    font-size: var(--t-1);
+    font-weight: var(--w-semibold);
+    line-height: var(--lh-tight);
+    letter-spacing: var(--tracking-head);
+  }
+
+  .footer__statement {
+    margin-top: var(--space-3);
+    max-width: var(--measure-lead);
+  }
+
+  .footer__col > .label { margin-bottom: var(--space-4); }
+
+  .footer__links {
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  .footer__contact {
+    display: grid;
+    gap: var(--space-1);
+    margin-bottom: var(--space-3);
+  }
+
+  .footer__contact dd { margin: 0; }
+
+  .footer__phone {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .footer__base {
+    margin-top: var(--space-8);
+    padding-top: var(--space-5);
+    border-top: var(--rule-hair) solid var(--c-rule-navy);
+    font-size: var(--t--1);
+  }
+</style>

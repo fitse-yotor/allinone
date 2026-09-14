@@ -1,0 +1,106 @@
+---
+import CapabilityList from './CapabilityList.astro';
+import { localizePath, type Locale } from '../i18n/utils';
+
+/*
+  One practice on the home page. Deliberately not three equal boxes: each
+  variant has its own internal structure, and "broad" (infrastructure) takes
+  the full measure with a three-column list so it reads as the largest.
+*/
+
+interface Props {
+  locale: Locale;
+  num: string;
+  name: string;
+  path: string;
+  tagline: string;
+  body: string;
+  capabilities: string[];
+  capabilitiesLabel: string;
+  readMore: string;
+  variant: 'split' | 'broad' | 'reverse';
+}
+
+const { locale, num, name, path, tagline, body, capabilities, capabilitiesLabel, readMore, variant } = Astro.props;
+const headingId = `practice-${num}`;
+---
+
+<article class:list={['practice', `practice--${variant}`]} aria-labelledby={headingId}>
+  <p class="practice__num numeral" aria-hidden="true">{num}</p>
+
+  <header class="practice__head">
+    <h3 id={headingId} class="practice__name">{name}</h3>
+    <p class="practice__tagline soft">{tagline}</p>
+  </header>
+
+  <div class="practice__body prose">
+    <p>{body}</p>
+    <p><a href={localizePath(path, locale)}>{readMore}<span class="visually-hidden">: {name}</span></a></p>
+  </div>
+
+  <div class="practice__list">
+    <p class="label">{capabilitiesLabel}</p>
+    <CapabilityList items={capabilities} columns={variant === 'broad' ? 3 : 2} />
+  </div>
+</article>
+
+<style>
+  .practice {
+    display: grid;
+    gap: var(--space-5);
+    padding-block: var(--space-8);
+    border-top: var(--rule-hair) solid var(--c-rule-strong);
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'num'
+      'head'
+      'body'
+      'list';
+  }
+
+  .practice__num { grid-area: num; font-size: var(--t-2); line-height: var(--lh-tight); }
+  .practice__head { grid-area: head; }
+  .practice__body { grid-area: body; }
+  .practice__list { grid-area: list; }
+
+  .practice__name { font-size: var(--t-4); }
+  .practice__tagline { margin-top: var(--space-2); font-size: var(--t-1); line-height: var(--lh-snug); }
+  .practice__list > .label { margin-bottom: var(--space-3); }
+
+  @media (min-width: 62rem) {
+    .practice {
+      column-gap: var(--space-8);
+      row-gap: var(--space-6);
+    }
+
+    /* 01: numeral column, text left, list right. */
+    .practice--split {
+      grid-template-columns: 6rem minmax(0, 5fr) minmax(0, 6fr);
+      grid-template-areas:
+        'num head list'
+        'num body list';
+      align-items: start;
+    }
+
+    /* 02: the broadest practice. Heading and body share a row at full width,
+       the list runs underneath across three columns. Visibly the largest. */
+    .practice--broad {
+      padding-block: var(--space-9);
+      grid-template-columns: 6rem minmax(0, 5fr) minmax(0, 7fr);
+      grid-template-areas:
+        'num head body'
+        '.   list list';
+    }
+
+    .practice--broad .practice__name { font-size: var(--t-5); }
+
+    /* 03: mirrored. List sits under the numeral column, text on the right. */
+    .practice--reverse {
+      grid-template-columns: 6rem minmax(0, 6fr) minmax(0, 5fr);
+      grid-template-areas:
+        'num list head'
+        'num list body';
+      align-items: start;
+    }
+  }
+</style>

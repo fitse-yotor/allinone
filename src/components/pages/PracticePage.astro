@@ -1,0 +1,227 @@
+---
+/*
+  Shared practice template: positioning, grouped capabilities, delivery tied
+  to the lifecycle, typical engagements, the other two practices, contact.
+*/
+import Base from '../../layouts/Base.astro';
+import PageHead from '../PageHead.astro';
+import CapabilityList from '../CapabilityList.astro';
+import LifecycleRule from '../LifecycleRule.astro';
+import ContactBand from '../ContactBand.astro';
+import { getCopy, localizePath, type Locale } from '../../i18n/utils';
+
+interface Props {
+  locale: Locale;
+  practice: 'cybersecurity' | 'infrastructure' | 'development';
+}
+
+const { locale, practice } = Astro.props;
+const t = getCopy(locale);
+const p = t[practice];
+const labels = t.practicePage;
+const path = `/${practice}/`;
+const others = t.home.practices.items.filter((item) => item.path !== path);
+
+const modes = 'modes' in p ? { label: p.modesLabel, items: p.modes } : null;
+const crossPractice = 'crossPractice' in p ? p.crossPractice : null;
+const wideGroups = p.groups.length > 4;
+---
+
+<Base title={p.title} description={p.description}>
+  <PageHead label={p.label} heading={p.heading} lede={p.lede} intro={p.intro} />
+
+  {
+    modes && (
+      <section class="section section--deep" aria-labelledby="modes-heading">
+        <div class="page split split--wide">
+          <h2 id="modes-heading" class="label">{modes.label}</h2>
+          <ol class="modes">
+            {modes.items.map((mode, i) => (
+              <li class="modes__item">
+                <span class="numeral">{String(i + 1).padStart(2, '0')}</span>
+                <h3 class="modes__name">{mode.name}</h3>
+                <p class="soft">{mode.text}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+    )
+  }
+
+  <section class="section" aria-labelledby="capabilities-heading">
+    <div class="page split split--wide">
+      <h2 id="capabilities-heading" class="label">{labels.capabilitiesLabel}</h2>
+      <div class:list={['groups', { 'groups--wide': wideGroups }]}>
+        {
+          p.groups.map((group) => (
+            <div class="groups__item">
+              <h3 class="groups__name">{group.name}</h3>
+              <CapabilityList items={group.items} columns={1} />
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="delivery-heading">
+    <div class="page stack">
+      <div class="split split--wide">
+        <h2 id="delivery-heading" class="label">{labels.deliveryLabel}</h2>
+        <p class="prose delivery">{p.delivery}</p>
+      </div>
+      <LifecycleRule steps={t.home.lifecycle.steps} />
+      <div class="split split--wide">
+        <span></span>
+        <p><a href={localizePath('/approach/', locale)}>{t.home.lifecycle.action}</a></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--deep" aria-labelledby="engagements-heading">
+    <div class="page split split--wide">
+      <h2 id="engagements-heading" class="label">{labels.engagementsLabel}</h2>
+      <ol class="engagements">
+        {
+          p.engagements.map((e, i) => (
+            <li>
+              <span class="numeral">{String(i + 1).padStart(2, '0')}</span>
+              <span>{e}</span>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  {
+    crossPractice && (
+      <section class="section" aria-label={t.home.coverage.label}>
+        <div class="page split split--wide">
+          <p class="label">{t.home.coverage.label}</p>
+          <p class="statement">{crossPractice}</p>
+        </div>
+      </section>
+    )
+  }
+
+  <section class="section" aria-labelledby="related-heading">
+    <div class="page split split--wide">
+      <h2 id="related-heading" class="label">{labels.relatedLabel}</h2>
+      <ul class="related">
+        {
+          others.map((o) => (
+            <li class="related__item">
+              <span class="numeral">{o.num}</span>
+              <div>
+                <h3 class="related__name">
+                  <a href={localizePath(o.path, locale)}>{o.name}</a>
+                </h3>
+                <p class="soft">{o.tagline}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <ContactBand locale={locale} />
+</Base>
+
+<style>
+  .stack > * + * { margin-top: var(--space-7); }
+
+  .modes {
+    display: grid;
+    gap: var(--space-6);
+    grid-template-columns: minmax(0, 1fr);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .modes__item {
+    padding-top: var(--space-4);
+    border-top: var(--rule-hair) solid var(--c-ink);
+  }
+
+  .modes__name { margin-block: var(--space-2) var(--space-3); }
+
+  @media (min-width: 62rem) {
+    .modes { grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: var(--space-6); }
+  }
+
+  .groups {
+    display: grid;
+    gap: var(--space-7) var(--space-6);
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .groups__name {
+    font-size: var(--t-1);
+    margin-bottom: var(--space-3);
+  }
+
+  @media (min-width: 45rem) {
+    .groups { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+
+  @media (min-width: 75rem) {
+    .groups--wide { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+
+  .delivery {
+    font-size: var(--t-1);
+    line-height: var(--lh-body);
+  }
+
+  .engagements {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: var(--rule-hair) solid var(--c-ink);
+  }
+
+  .engagements li {
+    display: grid;
+    grid-template-columns: var(--space-7) minmax(0, 1fr);
+    gap: var(--space-4);
+    max-width: 52rem;
+    padding-block: var(--space-4);
+    border-bottom: var(--rule-hair) solid var(--c-rule);
+    line-height: var(--lh-snug);
+  }
+
+  .statement {
+    max-width: 40ch;
+    font-size: var(--t-3);
+    line-height: var(--lh-snug);
+    letter-spacing: var(--tracking-head);
+  }
+
+  .related {
+    display: grid;
+    gap: var(--space-5);
+    grid-template-columns: minmax(0, 1fr);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .related__item {
+    display: grid;
+    grid-template-columns: var(--space-7) minmax(0, 1fr);
+    gap: var(--space-4);
+    padding-top: var(--space-4);
+    border-top: var(--rule-hair) solid var(--c-rule-strong);
+  }
+
+  .related__name { font-size: var(--t-2); margin-bottom: var(--space-2); }
+  .related__name a { color: var(--c-ink); }
+
+  @media (min-width: 62rem) {
+    .related { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--space-6); }
+  }
+</style>

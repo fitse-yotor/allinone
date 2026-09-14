@@ -1,0 +1,323 @@
+/*
+  AllInOne Technology: base layer.
+  Reset, typography, controls, focus, print.
+  Structure comes from hairline rules and whitespace, never from cards,
+  shadows, translucency or coloured borders.
+*/
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
+body {
+  margin: 0;
+  background: var(--c-paper);
+  color: var(--c-ink);
+  font-family: var(--font-sans);
+  font-size: var(--t-0);
+  font-weight: var(--w-regular);
+  line-height: var(--lh-body);
+  font-synthesis-weight: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  margin: 0;
+  font-weight: var(--w-semibold);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-head);
+  text-wrap: balance;
+}
+
+h1 { font-size: var(--t-6); }
+h2 { font-size: var(--t-4); }
+h3 { font-size: var(--t-2); }
+h4 { font-size: var(--t-1); }
+
+p, ul, ol, dl, table, figure, blockquote { margin: 0; }
+
+img, svg, canvas { display: block; max-width: 100%; }
+
+/* ---- Links ---------------------------------------------------------------
+   Underline offset shifts and thickens on hover. No opacity fade, no colour
+   dissolve, no transition on interactive state. */
+
+a {
+  color: var(--c-link);
+  text-decoration-line: underline;
+  text-decoration-thickness: var(--rule-hair);
+  text-underline-offset: 0.18em;
+}
+
+a:hover {
+  text-decoration-thickness: var(--rule-thick);
+  text-underline-offset: 0.24em;
+}
+
+/* ---- Focus -------------------------------------------------------------- */
+
+:focus-visible {
+  outline: var(--focus-ring) solid var(--c-focus);
+  outline-offset: var(--focus-offset);
+}
+
+.on-navy :focus-visible,
+.on-navy:focus-visible {
+  outline-color: var(--c-focus-navy);
+}
+
+.skip-link {
+  position: absolute;
+  left: var(--space-4);
+  top: var(--space-4);
+  z-index: 100;
+  padding: var(--space-3) var(--space-4);
+  background: var(--c-navy);
+  color: var(--c-on-navy);
+  font-family: var(--font-mono);
+  font-size: var(--t--1);
+  letter-spacing: var(--tracking-mono);
+  text-transform: uppercase;
+  text-decoration: none;
+  transform: translateY(-200%);
+}
+
+.skip-link:focus-visible { transform: translateY(0); }
+
+.visually-hidden {
+  position: absolute;
+  width: var(--rule-hair);
+  height: var(--rule-hair);
+  margin: calc(var(--rule-hair) * -1);
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+main:focus { outline: none; }
+
+/* ---- Layout primitives -------------------------------------------------- */
+
+.page {
+  width: 100%;
+  max-width: var(--page-max);
+  margin-inline: auto;
+  padding-inline: var(--page-gutter);
+}
+
+.section {
+  padding-block: var(--section-y);
+  border-top: var(--rule-hair) solid var(--c-rule);
+}
+
+.section--flush { border-top: 0; }
+
+.section--navy {
+  background: var(--c-navy);
+  color: var(--c-on-navy);
+  border-top-color: var(--c-rule-navy);
+}
+
+.section--deep { background: var(--c-paper-deep); }
+
+/* Asymmetric editorial grid: narrow mono label column, wide content column. */
+.split {
+  display: grid;
+  gap: var(--space-5);
+  grid-template-columns: minmax(0, 1fr);
+}
+
+/* Grid items default to min-width: auto, which lets a wide child such as the
+   comparison table stretch the page. Wide content scrolls in .scroll-x instead. */
+.split > * { min-width: 0; }
+
+@media (min-width: 62rem) {
+  .split {
+    grid-template-columns: 12rem minmax(0, 1fr);
+    gap: var(--space-8);
+  }
+  .split--wide { grid-template-columns: 16rem minmax(0, 1fr); }
+}
+
+/* ---- Type utilities ----------------------------------------------------- */
+
+.label {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--t--1);
+  font-weight: var(--w-medium);
+  letter-spacing: var(--tracking-mono);
+  text-transform: uppercase;
+  color: var(--c-ink-soft);
+  line-height: var(--lh-snug);
+}
+
+.on-navy .label { color: var(--c-on-navy-soft); }
+
+.numeral {
+  font-family: var(--font-mono);
+  font-weight: var(--w-medium);
+  font-variant-numeric: tabular-nums;
+  color: var(--c-accent);
+}
+
+.lede {
+  max-width: var(--measure-lead);
+  font-size: var(--t-3);
+  font-weight: var(--w-regular);
+  line-height: var(--lh-snug);
+  letter-spacing: var(--tracking-head);
+}
+
+.prose { max-width: var(--measure); }
+.prose > * + * { margin-top: var(--space-5); }
+.prose strong { font-weight: var(--w-semibold); }
+
+.soft { color: var(--c-ink-soft); }
+.on-navy .soft { color: var(--c-on-navy-soft); }
+
+/* ---- Controls ----------------------------------------------------------
+   Hover is a structural swap of ground and ink, applied instantly. */
+
+.action {
+  display: inline-block;
+  padding: var(--space-3) var(--space-5);
+  border: var(--rule-hair) solid var(--c-ink);
+  background: var(--c-ink);
+  color: var(--c-paper);
+  font-family: var(--font-mono);
+  font-size: var(--t--1);
+  font-weight: var(--w-medium);
+  letter-spacing: var(--tracking-mono);
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.action:hover {
+  background: var(--c-paper);
+  color: var(--c-ink);
+}
+
+.action--quiet {
+  background: transparent;
+  color: var(--c-ink);
+}
+
+.action--quiet:hover {
+  background: var(--c-ink);
+  color: var(--c-paper);
+}
+
+.on-navy .action {
+  border-color: var(--c-on-navy);
+  background: var(--c-on-navy);
+  color: var(--c-navy);
+}
+
+.on-navy .action:hover {
+  background: transparent;
+  color: var(--c-on-navy);
+}
+
+.on-navy .action--quiet {
+  background: transparent;
+  color: var(--c-on-navy);
+}
+
+.on-navy .action--quiet:hover {
+  background: var(--c-on-navy);
+  color: var(--c-navy);
+}
+
+.on-navy a { color: var(--c-link-navy); }
+
+/* ---- Lists -------------------------------------------------------------- */
+
+.plain-list {
+  list-style: none;
+  padding: 0;
+}
+
+/* Capability lists use a mono marker rule rather than a bullet glyph. */
+.capability-list {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 0;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 45rem) {
+  .capability-list--two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .capability-list--two > li:nth-child(2) { border-top: var(--rule-hair) solid var(--c-rule); }
+}
+
+.capability-list > li {
+  padding-block: var(--space-3);
+  border-top: var(--rule-hair) solid var(--c-rule);
+  line-height: var(--lh-snug);
+}
+
+.capability-list > li:first-child { border-top: var(--rule-hair) solid var(--c-rule); }
+.capability-list--two > li:first-child,
+.capability-list--two > li:nth-child(2) { border-top-color: var(--c-rule-strong); }
+
+.on-navy .capability-list > li { border-top-color: var(--c-rule-navy); }
+
+/* ---- Tables ------------------------------------------------------------
+   Wide tables scroll inside their own container so the body never does. */
+
+.scroll-x {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--t-0);
+}
+
+th, td {
+  padding: var(--space-4) var(--space-4) var(--space-4) 0;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: var(--rule-hair) solid var(--c-rule);
+  line-height: var(--lh-snug);
+}
+
+thead th {
+  font-family: var(--font-mono);
+  font-size: var(--t--1);
+  font-weight: var(--w-medium);
+  letter-spacing: var(--tracking-mono);
+  text-transform: uppercase;
+  color: var(--c-ink-soft);
+  border-bottom-color: var(--c-rule-strong);
+}
+
+/* ---- Print -------------------------------------------------------------
+   The audience attaches pages to tenders, so print output matters. */
+
+@media print {
+  .section--navy {
+    background: #fff;
+    color: #000;
+  }
+  .no-print { display: none !important; }
+  a { color: #000; }
+  a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 0.75em; }
+  .section { border-top: 1px solid #999; page-break-inside: avoid; }
+}

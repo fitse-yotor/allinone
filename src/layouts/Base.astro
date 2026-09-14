@@ -1,0 +1,93 @@
+---
+import '@fontsource-variable/ibm-plex-sans/index.css';
+import '@fontsource/ibm-plex-mono/400.css';
+import '@fontsource/ibm-plex-mono/500.css';
+import '@fontsource-variable/noto-sans-ethiopic/index.css';
+import '../styles/tokens.css';
+import '../styles/base.css';
+
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import {
+  getCopy,
+  isLocale,
+  defaultLocale,
+  stripLocale,
+  localizePath,
+  locales,
+  htmlLang,
+  ogLocale,
+  type Locale,
+} from '../i18n/utils';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Home page title is used as is; every other page gets the company name appended. */
+  isHome?: boolean;
+  noindex?: boolean;
+}
+
+const { title, description, isHome = false, noindex = false } = Astro.props;
+
+const locale: Locale = isLocale(Astro.currentLocale) ? Astro.currentLocale : defaultLocale;
+const t = getCopy(locale);
+const site = Astro.site ?? new URL('https://allinonetec.com');
+const neutralPath = stripLocale(Astro.url.pathname);
+const canonical = new URL(localizePath(neutralPath, locale), site).href;
+const fullTitle = isHome ? title : `${title} | ${t.company.name}`;
+
+// Organization data carries verified fields only. Address, email, logo and
+// social profiles are omitted until supplied (see PLACEHOLDERS.md).
+const organization = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: t.company.name,
+  url: new URL('/', site).href,
+  telephone: t.company.phone,
+  areaServed: { '@type': 'Country', name: 'Ethiopia' },
+  address: { '@type': 'PostalAddress', addressCountry: 'ET' },
+  // TODO: add "email", "logo", "sameAs" and a full "address" once verified.
+};
+---
+
+<!doctype html>
+<html lang={htmlLang[locale]} dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <link rel="canonical" href={canonical} />
+    {
+      locales.map((l) => (
+        <link rel="alternate" hreflang={htmlLang[l]} href={new URL(localizePath(neutralPath, l), site).href} />
+      ))
+    }
+    <link rel="alternate" hreflang="x-default" href={new URL(neutralPath, site).href} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={t.company.name} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={ogLocale[locale]} />
+    <!-- TODO: og:image once the logo file is supplied. -->
+
+    <meta name="theme-color" content="#f7f6f3" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(organization)} />
+    <script is:inline>document.documentElement.classList.add('js');</script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">{t.nav.skip}</a>
+    <Header locale={locale} />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <Footer locale={locale} />
+  </body>
+</html>
