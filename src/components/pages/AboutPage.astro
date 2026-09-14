@@ -2,6 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import PageHead from '../PageHead.astro';
 import ContactBand from '../ContactBand.astro';
+import DataFlowScene from '../DataFlowScene.astro';
 import { getCopy, type Locale } from '../../i18n/utils';
 
 interface Props {
@@ -11,10 +12,24 @@ interface Props {
 const { locale } = Astro.props;
 const t = getCopy(locale);
 const a = t.about;
+const am = locale === 'am';
 ---
 
 <Base title={a.title} description={a.description}>
-  <PageHead label={a.label} heading={a.heading} intro={a.intro} />
+  <section class="head section section--flush about-head">
+    <div class="page split split--wide">
+      <p class="label head__label">{a.label}</p>
+      <div>
+        <h1 class="head__heading">{a.heading}</h1>
+        {a.intro.length > 0 && (
+          <div class="prose head__intro">
+            {a.intro.map((para: string) => <p>{para}</p>)}
+          </div>
+        )}
+        <DataFlowScene caption={am ? 'ከመሠረተ ልማት ወደ የስራ ጣቢያ የተያያዘ ውሂብ' : 'Infrastructure to workstation, continuously connected'} />
+      </div>
+    </div>
+  </section>
 
   <section class="section section--navy on-navy" aria-label={`${a.missionLabel}, ${a.visionLabel}`}>
     <div class="page purpose">
@@ -55,6 +70,23 @@ const a = t.about;
 </Base>
 
 <style>
+  .about-head { padding-block: var(--space-8) var(--space-9); }
+
+  .head__heading { max-width: 22ch; }
+
+  .head__intro {
+    margin-top: var(--space-7);
+    padding-top: var(--space-5);
+    border-top: var(--rule-hair) solid var(--c-rule-strong);
+  }
+
+  .about-head .data-flow { margin-top: var(--space-7); }
+
+  @media (min-width: 62rem) {
+    .about-head { padding-block: var(--space-9) var(--space-10); }
+    .head__label { padding-top: var(--space-3); }
+  }
+
   .purpose {
     display: grid;
     gap: var(--space-8);

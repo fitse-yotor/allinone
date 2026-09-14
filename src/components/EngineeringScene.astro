@@ -1,0 +1,40 @@
+---
+// Real imagery with a scripted configuration demonstration, never a live terminal.
+---
+<div class="engineering-scene" data-engineering-scene>
+  <img class="engineer-photo" src="/images/hero.webp" alt="AI-generated Ethiopian engineer writing code on a laptop in a data center" width="1600" height="1000" fetchpriority="high" />
+  <div class="scene-shade"></div>
+  <div class="scene-kicker"><span class="status-dot"></span> IDEAS INTO INFRASTRUCTURE <span>01 / ET</span></div>
+  <div class="terminal-window" aria-label="Illustrative data center configuration">
+    <div class="terminal-bar"><span class="terminal-dots"><i></i><i></i><i></i></span><span>allinone / infrastructure</span><span>⌘</span></div>
+    <div class="terminal-body" aria-hidden="true"><p class="terminal-comment"># Addis Ababa · configuration preview</p><p><span class="terminal-prompt">❯ </span><span data-code-line>terraform init</span><span class="code-cursor">▍</span></p><p class="terminal-result" data-code-result>Initialising a secure foundation…</p></div>
+    <p class="visually-hidden">Animated demonstration: initialise infrastructure, configure the network, apply security controls, and check system health.</p>
+    <div class="server-status"><span><i></i> Network</span><span><i></i> Security</span><span><i></i> Compute</span></div>
+  </div>
+  <div class="scene-caption"><span>Human expertise.<br/><strong>Precisely configured.</strong></span><button type="button" class="scene-pause" aria-pressed="false" aria-label="Pause coding animation">Ⅱ</button></div>
+</div>
+<script>
+const scene=document.querySelector<HTMLElement>('[data-engineering-scene]');
+if(scene){
+ const line=scene.querySelector<HTMLElement>('[data-code-line]')!;
+ const result=scene.querySelector<HTMLElement>('[data-code-result]')!;
+ const button=scene.querySelector<HTMLButtonElement>('.scene-pause')!;
+ const reduce=window.matchMedia('(prefers-reduced-motion: reduce)');
+ const steps=[['terraform init','✓ Secure foundation initialised'],['ansible-playbook network.yml','✓ Network configuration verified'],['apply-policy --zero-trust','✓ Access controls applied'],['cluster health --all','✓ All systems ready']];
+ let index=0,character=0,hold=0,paused=false,inView=true,timer:ReturnType<typeof setTimeout>;
+ const tick=()=>{
+  if(!paused&&!reduce.matches&&!document.hidden&&inView){
+   if(character<=steps[index][0].length){line.textContent=steps[index][0].slice(0,character++);result.textContent='Configuring…';}
+   else {result.textContent=steps[index][1];if(++hold>24){index=(index+1)%steps.length;character=0;hold=0;}}
+  }
+  timer=setTimeout(tick,85);
+ };
+ const setPaused=(value:boolean)=>{paused=value;button.setAttribute('aria-pressed',String(value));button.setAttribute('aria-label',value?'Play coding animation':'Pause coding animation');button.textContent=value?'▶':'Ⅱ';scene.classList.toggle('is-paused',value);};
+ button.addEventListener('click',()=>setPaused(!paused));
+ document.addEventListener('motion-toggle',(event)=>setPaused((event as CustomEvent<boolean>).detail));
+ const observer=new IntersectionObserver(([entry])=>{inView=entry.isIntersecting;});observer.observe(scene);
+ const motion=()=>{if(reduce.matches){line.textContent='cluster health --all';result.textContent='✓ All systems ready';}};
+ reduce.addEventListener('change',motion);motion();tick();
+ window.addEventListener('pagehide',()=>{clearTimeout(timer);observer.disconnect();},{once:true});
+}
+</script>

@@ -54,7 +54,7 @@ export function mountEthiopia(host: HTMLElement, onFirstFrame: () => void): () =
   });
   geometry.center();
 
-  const material = new MeshStandardMaterial({ color: 0xe6e2da, roughness: 0.9, metalness: 0 });
+  const material = new MeshStandardMaterial({ color: 0x438675, roughness: 0.32, metalness: 0.45 });
   const form = new Mesh(geometry, material);
   form.rotation.x = -Math.PI / 2;
   form.castShadow = true;
@@ -99,6 +99,9 @@ export function mountEthiopia(host: HTMLElement, onFirstFrame: () => void): () =
   observer.observe(host);
   resize();
 
+  let paused = false;
+  const onMotion = (event: Event) => { paused = (event as CustomEvent<boolean>).detail; };
+  document.addEventListener('motion-toggle', onMotion);
   let frame = 0;
   let last = performance.now();
   let first = true;
@@ -108,7 +111,7 @@ export function mountEthiopia(host: HTMLElement, onFirstFrame: () => void): () =
     // Clamp the step so returning to a background tab does not jump the model.
     const dt = Math.min((now - last) / 1000, 0.1);
     last = now;
-    pivot.rotation.y += speed * dt;
+    if (!paused) { pivot.rotation.y += speed * dt; pivot.position.y = Math.sin(now / 1800) * 0.045; }
     renderer.render(scene, camera);
     if (first) {
       first = false;
@@ -130,7 +133,10 @@ export function mountEthiopia(host: HTMLElement, onFirstFrame: () => void): () =
   return () => {
     cancelAnimationFrame(frame);
     document.removeEventListener('visibilitychange', onVisibility);
+    document.removeEventListener('motion-toggle', onMotion);
     observer.disconnect();
+    ground.geometry.dispose();
+    ground.material.dispose();
     geometry.dispose();
     material.dispose();
     renderer.dispose();

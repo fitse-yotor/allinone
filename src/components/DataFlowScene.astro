@@ -1,0 +1,265 @@
+---
+interface Props {
+  caption?: string;
+}
+const { caption } = Astro.props;
+---
+
+<div class="data-flow" data-data-flow aria-hidden="true">
+  <div class="df-rack">
+    <div class="df-rack__unit"><i></i><i></i><i></i></div>
+    <div class="df-rack__unit"><i></i><i></i><i></i></div>
+    <div class="df-rack__unit"><i></i><i></i><i></i></div>
+    <span class="df-rack__label">SERVER</span>
+  </div>
+
+  <div class="df-link">
+    <svg class="df-link__line" viewBox="0 0 240 40" preserveAspectRatio="none">
+      <path d="M0 20 H240" />
+    </svg>
+    <span class="df-packet df-packet--1"></span>
+    <span class="df-packet df-packet--2"></span>
+    <span class="df-packet df-packet--3"></span>
+  </div>
+
+  <div class="df-pc">
+    <div class="df-pc__screen">
+      <p class="df-pc__line" data-df-line>&nbsp;</p>
+      <p class="df-pc__cursor" data-df-cursor>▍</p>
+    </div>
+    <div class="df-pc__stand"></div>
+    <span class="df-pc__label">WORKSTATION</span>
+  </div>
+
+  {caption && <p class="df-caption">{caption}</p>}
+</div>
+
+<script>
+const scenes = document.querySelectorAll<HTMLElement>('[data-data-flow]');
+const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+const messages = ['Receiving update…', 'Sync complete ✓', 'Applying configuration…', 'Systems ready ✓'];
+
+scenes.forEach((scene) => {
+  const line = scene.querySelector<HTMLElement>('[data-df-line]');
+  const cursor = scene.querySelector<HTMLElement>('[data-df-cursor]');
+  if (!line || !cursor) return;
+
+  if (reduce.matches) {
+    line.textContent = messages[messages.length - 1];
+    cursor.style.display = 'none';
+    return;
+  }
+
+  let index = 0;
+  let inView = true;
+  const observer = new IntersectionObserver(([entry]) => { inView = entry.isIntersecting; });
+  observer.observe(scene);
+
+  const cycle = () => {
+    if (inView && !document.hidden) {
+      line.textContent = messages[index];
+      index = (index + 1) % messages.length;
+    }
+    setTimeout(cycle, 2200);
+  };
+  cycle();
+
+  window.addEventListener('pagehide', () => observer.disconnect(), { once: true });
+});
+</script>
+
+<style>
+  .data-flow {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-6);
+    border-radius: 20px;
+    background: linear-gradient(160deg, #0f2b23, #163a30);
+    box-shadow: 0 24px 55px #10251c33;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* ---- Server rack ---- */
+
+  .df-rack {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    position: relative;
+  }
+
+  .df-rack__unit {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    width: 64px;
+    padding: 8px 9px;
+    border-radius: 5px;
+    background: #0c2119;
+    border: 1px solid #33574a;
+  }
+
+  .df-rack__unit i {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #6fae7a;
+    animation: df-blink 2.4s ease-in-out infinite;
+  }
+
+  .df-rack__unit:nth-child(2) i { animation-delay: 0.4s; }
+  .df-rack__unit:nth-child(3) i { animation-delay: 0.8s; }
+  .df-rack__unit i:nth-child(2) { animation-delay: 0.15s; }
+  .df-rack__unit i:nth-child(3) { animation-delay: 0.3s; }
+
+  .df-rack__label {
+    margin-top: 4px;
+    font-family: var(--font-mono);
+    font-size: 8px;
+    letter-spacing: 0.12em;
+    color: #a9c2b3;
+    text-align: center;
+  }
+
+  /* ---- Connecting link with traveling packets ---- */
+
+  .df-link {
+    position: relative;
+    height: 40px;
+    min-width: 60px;
+  }
+
+  .df-link__line {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  .df-link__line path {
+    fill: none;
+    stroke: #3a6153;
+    stroke-width: 1.5;
+    stroke-dasharray: 3 5;
+  }
+
+  .df-packet {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 7px;
+    height: 7px;
+    margin-top: -3.5px;
+    border-radius: 50%;
+    background: #e5cca0;
+    box-shadow: 0 0 8px #e5cca0aa;
+    animation: df-travel 2.6s linear infinite;
+    opacity: 0;
+  }
+
+  .df-packet--2 { animation-delay: 0.9s; background: #9ce68d; box-shadow: 0 0 8px #9ce68daa; }
+  .df-packet--3 { animation-delay: 1.8s; }
+
+  /* ---- PC / workstation ---- */
+
+  .df-pc {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+  }
+
+  .df-pc__screen {
+    width: 118px;
+    height: 76px;
+    border-radius: 6px;
+    background: #0c2119;
+    border: 1px solid #33574a;
+    padding: 8px 9px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .df-pc__line {
+    margin: 0;
+    display: inline;
+    font-family: var(--font-mono);
+    font-size: 8px;
+    line-height: 1.5;
+    color: #b8dba9;
+    white-space: nowrap;
+  }
+
+  .df-pc__cursor {
+    display: inline;
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 8px;
+    color: #e6c78e;
+    animation: df-cursor-blink 1s steps(1) infinite;
+  }
+
+  .df-pc__stand {
+    width: 28px;
+    height: 10px;
+    background: #22453a;
+    margin-top: 2px;
+    clip-path: polygon(20% 0, 80% 0, 100% 100%, 0 100%);
+  }
+
+  .df-pc__stand::after {
+    content: '';
+    display: block;
+  }
+
+  .df-pc__label {
+    margin-top: 6px;
+    font-family: var(--font-mono);
+    font-size: 8px;
+    letter-spacing: 0.12em;
+    color: #a9c2b3;
+  }
+
+  .df-caption {
+    grid-column: 1 / -1;
+    margin: var(--space-2) 0 0;
+    font-size: var(--t--1);
+    color: #a9c2b3;
+    text-align: center;
+  }
+
+  @keyframes df-blink {
+    0%, 100% { opacity: 0.35; }
+    50% { opacity: 1; }
+  }
+
+  @keyframes df-travel {
+    0% { left: 0; opacity: 0; }
+    8% { opacity: 1; }
+    92% { opacity: 1; }
+    100% { left: calc(100% - 7px); opacity: 0; }
+  }
+
+  @keyframes df-cursor-blink {
+    50% { opacity: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .df-rack__unit i,
+    .df-packet,
+    .df-pc__cursor {
+      animation: none !important;
+    }
+    .df-rack__unit i { opacity: 0.85; }
+    .df-packet { opacity: 0; }
+  }
+
+  @media (max-width: 30rem) {
+    .data-flow { grid-template-columns: 1fr; justify-items: center; }
+    .df-link { width: 100%; height: 30px; }
+  }
+</style>

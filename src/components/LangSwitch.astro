@@ -45,8 +45,14 @@ const href = switchPath(Astro.url.pathname, target);
 
   .lang__other:hover {
     background: var(--c-paper-deep);
+    color: var(--c-ink);
     text-decoration: underline;
     text-underline-offset: 0.24em;
+  }
+
+  :global(.header) .lang__other:hover {
+    background: #31584a;
+    color: #f3f3e8;
   }
 
   .lang__other:lang(am) { font-family: var(--font-ethiopic); }

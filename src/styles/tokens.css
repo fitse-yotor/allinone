@@ -87,7 +87,7 @@
 
   --measure:      68ch;  /* body text cap */
   --measure-lead: 34ch;  /* large display text cap */
-  --page-max:     1240px;
+  --page-max:     1720px;
   --page-gutter:  var(--space-5);
 
   --rule-hair: 1px;

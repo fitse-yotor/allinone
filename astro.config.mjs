@@ -3,13 +3,14 @@ import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
 // TODO: confirm the production domain. allinonetec.com is the current site this one replaces.
-const site = 'https://allinonetec.com';
+const site = process.env.PUBLIC_SITE_URL || 'https://allinonetec.com';
 
 export default defineConfig({
   site,
   output: 'static',
   trailingSlash: 'always',
   build: { format: 'directory' },
+  devToolbar: { enabled: false },
 
   i18n: {
     defaultLocale: 'en',
@@ -37,3 +38,4 @@ export default defineConfig({
     }),
   ],
 });
+

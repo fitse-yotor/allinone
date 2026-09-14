@@ -1,0 +1,10 @@
+---
+import {projects, team, testimonials} from '../data/showcase';
+interface Props {kind: 'projects' | 'team' | 'testimonials'; limit?: number;}
+const {kind, limit=10} = Astro.props;
+---
+<div class:list={['showcase-grid', {'team-grid':kind==='team'}]}>
+{kind==='projects' && projects.slice(0,limit).map((p,i)=><article class="project-card"><div class:list={['project-art',p.color]}><span class="art-label">{p.tag}</span><img src={`/images/${["health","coffee","security"][i]}.webp`} alt={`AI-generated concept imagery for ${p.client}`} width="1200" height="800" loading="lazy" decoding="async" /><span class="art-caption">{p.client}</span></div><div class="card-body"><p class="eyebrow">{p.category} / Concept project</p><h3>{p.name}</h3><p>{p.text}</p></div></article>)}
+{kind==='team' && team.slice(0,limit).map((p,i)=><article class="person-card"><div class:list={['person-art',i%2?'sand':'sage']}><img src={`/images/${["hana","dawit","meron","yonas"][i]}.webp`} alt={`AI-generated portrait of fictional team member ${p.name}`} width="800" height="1000" loading="lazy" decoding="async" /><small>AI-GENERATED PORTRAIT</small></div><div class="card-body"><h3>{p.name}</h3><p class="person-role">{p.role}</p><p>{p.text}</p><p class="sample-phone">{p.phone} · sample</p></div></article>)}
+{kind==='testimonials' && testimonials.slice(0,limit).map((p)=><figure class="quote-card"><span class="quote-mark">“</span><blockquote>{p.quote}</blockquote><figcaption><span class="avatar">{p.initials}</span><div><strong>{p.name}</strong><small>{p.role}</small></div></figcaption></figure>)}
+</div>
