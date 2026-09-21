@@ -1,5 +1,5 @@
 /*
-  AllInOne Technology: design tokens.
+  All In One Cyber Security solution: design tokens.
   This is the ONLY file permitted to declare raw pixel and colour values.
   Every component consumes these variables. tools/check-slop.mjs enforces that.
 
@@ -87,7 +87,7 @@
 
   --measure:      68ch;  /* body text cap */
   --measure-lead: 34ch;  /* large display text cap */
-  --page-max:     1720px;
+  --page-max:     1680px;
   --page-gutter:  var(--space-5);
 
   --rule-hair: 1px;

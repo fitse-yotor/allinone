@@ -4,8 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
+    "dev": "node api.js && astro dev",
+    "build": "node api.js && astro build",
     "preview": "astro preview",
     "check": "astro check",
     "check:slop": "node tools/check-slop.mjs"
