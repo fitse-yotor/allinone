@@ -46,10 +46,12 @@ const organization = {
   '@type': 'Organization',
   name: t.company.name,
   url: new URL('/', site).href,
+  logo: new URL('/all-in-one-cyber-security-logo.png', site).href,
   telephone: t.company.phone,
+  email: t.company.email,
   areaServed: { '@type': 'Country', name: 'Ethiopia' },
   address: { '@type': 'PostalAddress', addressCountry: 'ET' },
-  // TODO: add "email", "logo", "sameAs" and a full "address" once verified.
+  // TODO: add "sameAs" and a full "address" once verified.
 };
 ---
 
@@ -78,13 +80,17 @@ const organization = {
     <!-- TODO: og:image once the logo file is supplied. -->
 
     <meta name="theme-color" content="#f7f6f3" />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" href="/all-in-one-cyber-security-logo.png" as="image" />
+    <link rel="icon" href="/all-in-one-cyber-security-logo.png" type="image/png" />
     <link rel="sitemap" href="/sitemap-index.xml" />
 
     <script is:inline type="application/ld+json" set:html={JSON.stringify(organization)} />
     <script is:inline>document.documentElement.classList.add('js');</script>
   </head>
   <body>
+    <div class="site-loader" data-site-loader aria-hidden="true">
+      <img src="/all-in-one-cyber-security-logo.png" alt="" width="1255" height="1255" />
+    </div>
     <a class="skip-link" href="#main">{t.nav.skip}</a>
     <Header locale={locale} />
     <main id="main" tabindex="-1">
@@ -92,5 +98,18 @@ const organization = {
     </main>
     <Footer locale={locale} />
     <Motion />
+    <script is:inline>
+      (() => {
+        const loader = document.querySelector('[data-site-loader]');
+        if (!loader) return;
+        const finish = () => {
+          loader.classList.add('site-loader--done');
+          window.setTimeout(() => loader.remove(), 220);
+        };
+        if (document.readyState === 'complete') finish();
+        else window.addEventListener('load', finish, { once: true });
+        window.setTimeout(finish, 2400);
+      })();
+    </script>
   </body>
 </html>

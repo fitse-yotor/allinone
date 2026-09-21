@@ -20,7 +20,7 @@ const t = getCopy(locale);
     <div class="band__phone">
       <p class="label">{t.contactBand.phoneLabel}</p>
       <a class="band__number" href={t.company.phoneHref}>{t.company.phone}</a>
-      <!-- TODO: email address, once a real mailbox is confirmed. -->
+      <a class="band__email" href={t.company.emailHref}>{t.company.email}</a>
     </div>
   </div>
 </section>
@@ -57,6 +57,13 @@ const t = getCopy(locale);
     font-variant-numeric: tabular-nums;
     line-height: var(--lh-tight);
     text-decoration-color: var(--c-accent);
+  }
+
+  .band__email {
+    display: block;
+    margin-top: var(--space-3);
+    color: var(--c-on-navy);
+    overflow-wrap: anywhere;
   }
 
   @media (min-width: 62rem) {

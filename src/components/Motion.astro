@@ -4,7 +4,7 @@
 <script>
 const reduced=window.matchMedia('(prefers-reduced-motion: reduce)');
 if(!reduced.matches && 'IntersectionObserver' in window){
- const elements=document.querySelectorAll<HTMLElement>('.section-heading, .service-card, .project-card, .person-card, .quote-card, .closing-cta, .collection-head');
+ const elements=document.querySelectorAll<HTMLElement>('.section-heading, .service-card, .project-card, .person-card, .quote-card, .closing-cta, .collection-head, .motion-target, .contact-card, .hero-brand');
  const observer=new IntersectionObserver((entries)=>{for(const entry of entries){if(entry.isIntersecting){entry.target.classList.add('is-revealed');observer.unobserve(entry.target);}}},{threshold:0.08,rootMargin:'0px 0px -25px 0px'});
  elements.forEach((element)=>{const siblings=Array.from(element.parentElement?.children??[]);const index=siblings.indexOf(element);element.style.setProperty('--reveal-delay',`${Math.min(index,3)*85}ms`);element.classList.add('reveal-ready');observer.observe(element);});
  reduced.addEventListener('change',()=>{if(reduced.matches){elements.forEach(element=>element.classList.add('is-revealed'));observer.disconnect();}});
