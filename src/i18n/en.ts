@@ -17,12 +17,14 @@ export const en = {
   dir: 'ltr',
 
   company: {
-    name: 'AllInOne Technology',
-    shortName: 'AllInOne',
+    name: 'All In One Cyber Security solution',
+    shortName: 'All In One Cyber Security solution',
     descriptor: 'Technology systems integration and development',
     country: 'Ethiopia',
     phone: '+251912602101',
     phoneHref: 'tel:+251912602101',
+    email: 'contact@allinonetec.com',
+    emailHref: 'mailto:contact@allinonetec.com',
   },
 
   nav: {
@@ -49,7 +51,7 @@ export const en = {
     contactLabel: 'Contact',
     phoneLabel: 'Phone',
     statement:
-      'AllInOne Technology designs, implements and supports secure technology environments for institutions in Ethiopia.',
+      'All In One Cyber Security solution designs, implements and supports secure technology environments for institutions in Ethiopia.',
     rights: 'All rights reserved.',
   },
 
@@ -62,15 +64,15 @@ export const en = {
   },
 
   home: {
-    title: 'AllInOne Technology: cybersecurity, infrastructure and development in Ethiopia',
+    title: 'All In One Cyber Security solution: cybersecurity, infrastructure and development in Ethiopia',
     description:
-      'AllInOne Technology is an Ethiopian technology systems integration and development firm working across cybersecurity, technology infrastructure and software development, from assessment through implementation and support.',
+      'All In One Cyber Security solution is an Ethiopian technology systems integration and development firm working across cybersecurity, technology infrastructure and software development, from assessment through implementation and support.',
 
     hero: {
       heading:
         'We secure the foundation, build the infrastructure, and develop the systems organizations rely on.',
       body:
-        'AllInOne Technology is a systems integration and development firm based in Ethiopia. We work across three connected practices, from the first assessment through design, implementation, integration and long term support.',
+        'All In One Cyber Security solution is a systems integration and development firm based in Ethiopia. We work across three connected practices, from the first assessment through design, implementation, integration and long term support.',
       actionPrimary: 'Start a conversation',
       actionSecondary: 'How we work',
       sceneLabel: 'Ethiopia, rendered as an extruded geometric form',
@@ -80,7 +82,7 @@ export const en = {
     positioning: {
       label: 'The firm',
       statement:
-        'AllInOne Technology is a technology systems integration and development firm providing cybersecurity, technology infrastructure, systems engineering, software development and consulting. We support clients across the complete technology lifecycle, from assessment and architecture through implementation, integration, deployment and ongoing support.',
+        'All In One Cyber Security solution is a technology systems integration and development firm providing cybersecurity, technology infrastructure, systems engineering, software development and consulting. We support clients across the complete technology lifecycle, from assessment and architecture through implementation, integration, deployment and ongoing support.',
       questionsLabel: 'What clients ask us',
       questions: [
         'How do we secure our technology?',
@@ -88,7 +90,7 @@ export const en = {
         'How do we develop the software our organization needs?',
       ],
       questionsNote:
-        'Most firms answer one of these. Answering all three is the reason this company is called AllInOne.',
+        'Most firms answer one of these. Answering all three is the reason this company is called All In One Cyber Security solution.',
     },
 
     practices: {
@@ -193,7 +195,7 @@ export const en = {
             'The infrastructure design underneath, and the systems above',
           ],
           [
-            'AllInOne Technology',
+            'All In One Cyber Security solution',
             'The infrastructure, the security design, and the software on top of it',
             'Vendor coordination, because one team is accountable for all three',
           ],
@@ -529,13 +531,13 @@ export const en = {
       'An application deployed onto infrastructure we designed, secured and continue to support.',
     ],
     crossPractice:
-      'AllInOne can build the infrastructure, secure it, and develop the application that operates on top of it. When those three are held by one team, the questions that usually fall between suppliers have an owner.',
+      'All In One Cyber Security solution can build the infrastructure, secure it, and develop the application that operates on top of it. When those three are held by one team, the questions that usually fall between suppliers have an owner.',
   },
 
   approach: {
     title: 'How we work',
     description:
-      'The AllInOne engagement process: assess, advise, design, implement, integrate, validate, hand over and support.',
+      'The All In One Cyber Security solution engagement process: assess, advise, design, implement, integrate, validate, hand over and support.',
     label: 'Process',
     heading: 'Assess first. Recommend second. Build third.',
     lede:
@@ -564,7 +566,7 @@ export const en = {
   industries: {
     title: 'Industries',
     description:
-      'AllInOne Technology works with government, financial services, telecommunication, enterprise, critical infrastructure, education, healthcare and international organizations in Ethiopia.',
+      'All In One Cyber Security solution works with government, financial services, telecommunication, enterprise, critical infrastructure, education, healthcare and international organizations in Ethiopia.',
     label: 'Clients',
     heading: 'Who we build for.',
     lede:
@@ -586,11 +588,11 @@ export const en = {
   about: {
     title: 'About',
     description:
-      'AllInOne Technology is an Ethiopian technology engineering and systems integration firm working across cybersecurity, technology infrastructure and software development.',
+      'All In One Cyber Security solution is an Ethiopian technology engineering and systems integration firm working across cybersecurity, technology infrastructure and software development.',
     label: 'About',
     heading: 'An engineering firm, across three practices.',
     intro: [
-      'AllInOne Technology is an Ethiopian technology engineering and systems integration firm focused on cybersecurity, technology infrastructure and software development.',
+      'All In One Cyber Security solution is an Ethiopian technology engineering and systems integration firm focused on cybersecurity, technology infrastructure and software development.',
       'We work with organizations from initial assessment and consulting through architecture, implementation, integration and operational support. Our capabilities span secure networks, data center infrastructure, physical security, enterprise communication systems and custom software platforms.',
       'By bringing infrastructure, security and development together, we help clients build technology environments that are secure, reliable and practical to operate.',
     ],
@@ -615,7 +617,7 @@ export const en = {
   contact: {
     title: 'Contact',
     description:
-      'Contact AllInOne Technology about cybersecurity, technology infrastructure or software development work in Ethiopia.',
+      'Contact All In One Cyber Security solution about cybersecurity, technology infrastructure or software development work in Ethiopia.',
     label: 'Contact',
     heading: 'Start with the requirement.',
     lede:
