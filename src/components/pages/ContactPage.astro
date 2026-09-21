@@ -1,180 +1,135 @@
 ---
 import Base from '../../layouts/Base.astro';
-import PageHead from '../PageHead.astro';
 import { getCopy, type Locale } from '../../i18n/utils';
 
-interface Props {
-  locale: Locale;
-}
+interface Props { locale: Locale; }
 
 const { locale } = Astro.props;
 const t = getCopy(locale);
 const c = t.contact;
 const f = c.form;
-
-// TODO: Formspree endpoint, for example https://formspree.io/f/abcdwxyz.
-// Set PUBLIC_FORM_ENDPOINT at build time. Until it is set, production builds
-// ship the page without the form (phone only) rather than a form that posts
-// nowhere. Development builds still render it so the layout can be reviewed.
-const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT as string | undefined;
-const showForm = Boolean(endpoint) || import.meta.env.DEV;
+const am = locale === 'am';
+const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT || 'https://formsubmit.co/ajax/contact@allinonetec.com';
 ---
 
 <Base title={c.title} description={c.description}>
-  <PageHead label={c.label} heading={c.heading} lede={c.lede} />
+  <section class="contact-page">
+    <div class="page contact-layout">
+      <div class="contact-copy">
+        <p class="label">{c.label}</p>
+        <h1>{am ? 'እንወያይ።' : 'Let’s talk about what you need.'}</h1>
+        <p class="contact-lede">{c.lede}</p>
 
-  <section class="section">
-    <div class="page contact">
-      <div class="contact__direct">
-        <p class="label">{c.phoneLabel}</p>
-        <a class="contact__phone" href={t.company.phoneHref}>{t.company.phone}</a>
-        {c.phoneNote && <p class="soft">{c.phoneNote}</p>}
-        <p class="soft">{t.company.country}</p>
-        <!-- TODO: real email address, once confirmed. -->
-        <!-- TODO: office address and map link, once supplied. -->
+        <div class="contact-details">
+          <div class="contact-method">
+            <span class="contact-method__icon" aria-hidden="true">@</span>
+            <div><p class="label">{am ? 'ኢሜይል' : 'Email'}</p><a href={t.company.emailHref}>{t.company.email}</a></div>
+          </div>
+          <div class="contact-method">
+            <span class="contact-method__icon" aria-hidden="true">☎</span>
+            <div><p class="label">{c.phoneLabel}</p><a href={t.company.phoneHref}>{t.company.phone}</a></div>
+          </div>
+          <p class="contact-note">{am ? 'መልዕክቶች በተሳካ ሁኔታ ወደ ቡድናችን ይላካሉ።' : 'Messages are delivered directly to our team.'}</p>
+        </div>
       </div>
 
-      {
-        showForm && (
-          <form class="form" method="POST" action={endpoint ?? '#'} aria-labelledby="form-heading">
-            <h2 id="form-heading" class="form__heading">{c.formLabel}</h2>
-            <input type="hidden" name="_language" value={locale} />
+      <div class="contact-card">
+        <div class="contact-card__head">
+          <div><p class="eyebrow">All In One Cyber Security solution</p><h2 id="contact-form-heading">{am ? 'አግኙን' : 'Contact us'}</h2></div>
+          <img src="/all-in-one-cyber-security-logo.png" alt="All In One Cyber Security solution" width="1255" height="1255" />
+        </div>
 
-            <div class="form__row">
-              <label for="f-name">{f.name} <span class="soft">({f.required})</span></label>
-              <input id="f-name" name="name" type="text" autocomplete="name" required />
-            </div>
+        <form class="contact-form" data-mail-form data-endpoint={endpoint} aria-labelledby="contact-form-heading">
+          <div class="form-pair">
+            <div class="form-field"><label for="f-first">{am ? 'የመጀመሪያ ስም' : 'First name'} <b>*</b></label><input id="f-first" name="firstName" type="text" autocomplete="given-name" required /></div>
+            <div class="form-field"><label for="f-last">{am ? 'የአባት ስም' : 'Last name'} <b>*</b></label><input id="f-last" name="lastName" type="text" autocomplete="family-name" required /></div>
+          </div>
 
-            <div class="form__row">
-              <label for="f-org">{f.organization} <span class="soft">({f.required})</span></label>
-              <input id="f-org" name="organization" type="text" autocomplete="organization" required />
-            </div>
+          <div class="form-pair">
+            <div class="form-field"><label for="f-phone">{f.phone} <b>*</b></label><input id="f-phone" name="phone" type="tel" autocomplete="tel" required /></div>
+            <div class="form-field"><label for="f-email">{f.email} <b>*</b></label><input id="f-email" name="email" type="email" autocomplete="email" required /></div>
+          </div>
 
-            <div class="form__pair">
-              <div class="form__row">
-                <label for="f-email">{f.email} <span class="soft">({f.required})</span></label>
-                <input id="f-email" name="email" type="email" autocomplete="email" required />
-              </div>
-              <div class="form__row">
-                <label for="f-phone">{f.phone} <span class="soft">({f.optional})</span></label>
-                <input id="f-phone" name="phone" type="tel" autocomplete="tel" />
-              </div>
-            </div>
+          <div class="form-field"><label for="f-org">{f.organization} <span>({f.optional})</span></label><input id="f-org" name="organization" type="text" autocomplete="organization" /></div>
+          <div class="form-field"><label for="f-message">{f.message} <b>*</b></label><textarea id="f-message" name="message" rows="7" placeholder={f.messagePlaceholder} required></textarea></div>
 
-            <div class="form__pair">
-              <div class="form__row">
-                <label for="f-sector">{f.sector}</label>
-                <select id="f-sector" name="sector">
-                  {f.sectorOptions.map((o, i) => <option value={i === 0 ? '' : o}>{o}</option>)}
-                </select>
-              </div>
-              <div class="form__row">
-                <label for="f-interest">{f.interest}</label>
-                <select id="f-interest" name="interest">
-                  {f.interestOptions.map((o, i) => <option value={i === 0 ? '' : o}>{o}</option>)}
-                </select>
-              </div>
-            </div>
-
-            <div class="form__row">
-              <label for="f-message">{f.message} <span class="soft">({f.required})</span></label>
-              <textarea id="f-message" name="message" rows="7" placeholder={f.messagePlaceholder} required></textarea>
-            </div>
-
-            <p><button class="action" type="submit">{f.submit}</button></p>
-
-            <div class="form__fallback">
-              <p class="label">{f.fallbackHeading}</p>
-              <p class="soft">{f.fallbackBody}</p>
-            </div>
-          </form>
-        )
-      }
+          <div class="form-foot">
+            <p class="form-privacy">{am ? 'መረጃዎ መልዕክትዎን ለመመለስ ብቻ ጥቅም ላይ ይውላል።' : 'Your details are used only to respond to your enquiry.'}</p>
+            <button class="form-submit" type="submit">{f.submit}<span aria-hidden="true">↗</span></button>
+          </div>
+          <p class="form-status" data-form-status aria-live="polite"></p>
+        </form>
+      </div>
     </div>
   </section>
 </Base>
 
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-mail-form]');
+  const status = document.querySelector<HTMLElement>('[data-form-status]');
+  form?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+    const data = new FormData(form);
+    const fullName = `${data.get('firstName') ?? ''} ${data.get('lastName') ?? ''}`.trim();
+    data.set('name', fullName);
+    data.set('_subject', `Website enquiry from ${fullName || 'a prospective client'}`);
+    data.set('_captcha', 'false');
+    if (submit) { submit.disabled = true; submit.classList.add('is-sending'); }
+    if (status) { status.textContent = ''; status.className = 'form-status'; }
+    try {
+      const response = await fetch(form.dataset.endpoint || '', { method: 'POST', headers: { Accept: 'application/json' }, body: data });
+      if (!response.ok) throw new Error('Delivery failed');
+      form.reset();
+      if (status) { status.textContent = 'Thank you. Your message has been sent.'; status.classList.add('is-success'); }
+    } catch {
+      if (status) { status.textContent = 'We could not send the message. Please email contact@allinonetec.com directly.'; status.classList.add('is-error'); }
+    } finally {
+      if (submit) { submit.disabled = false; submit.classList.remove('is-sending'); }
+    }
+  });
+</script>
+
 <style>
-  .contact {
-    display: grid;
-    gap: var(--space-8);
-    grid-template-columns: minmax(0, 1fr);
-  }
+  .contact-page { padding-block: clamp(3rem, 7vw, 7rem); }
+  .contact-layout { display: grid; gap: var(--space-8); align-items: start; }
+  .contact-copy { max-width: 40rem; padding-top: var(--space-3); }
+  .contact-copy h1 { margin-top: var(--space-4); max-width: 11ch; font-size: clamp(2.7rem, 5vw, 5rem); }
+  .contact-lede { max-width: 35rem; margin-top: var(--space-5); color: var(--c-ink-soft); font-size: var(--t-1); line-height: 1.65; }
+  .contact-details { display: grid; gap: var(--space-5); margin-top: var(--space-7); padding-top: var(--space-5); border-top: var(--rule-hair) solid var(--c-rule-strong); }
+  .contact-method { display: grid; grid-template-columns: 2.75rem minmax(0, 1fr); gap: var(--space-3); align-items: center; }
+  .contact-method__icon { display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border-radius: 50%; background: var(--c-paper-deep); color: var(--c-ink); font-family: var(--font-mono); }
+  .contact-method .label { margin-bottom: var(--space-1); }
+  .contact-method a { color: var(--c-ink); font-size: var(--t-1); overflow-wrap: anywhere; }
+  .contact-note { max-width: 34rem; color: var(--c-ink-soft); font-size: .9rem; }
 
-  @media (min-width: 62rem) {
-    .contact { grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); column-gap: var(--space-9); }
-  }
+  .contact-card { overflow: hidden; border: var(--rule-hair) solid var(--c-rule-strong); border-radius: 12px; background: #f0f1ed; box-shadow: 0 28px 70px #173d3414; }
+  .contact-card__head { display: flex; justify-content: space-between; align-items: center; gap: var(--space-5); padding: var(--space-5) var(--space-6); background: var(--c-navy); color: var(--c-on-navy); }
+  .contact-card__head .eyebrow { color: var(--c-on-navy-soft); }
+  .contact-card__head h2 { margin-top: var(--space-1); font-size: var(--t-3); }
+  .contact-card__head img { width: 4rem; height: 4rem; object-fit: contain; border-radius: 9px; background: white; }
+  .contact-form { display: grid; gap: var(--space-4); padding: var(--space-6); }
+  .form-pair { display: grid; gap: var(--space-4); }
+  .form-field { display: grid; gap: var(--space-2); }
+  .form-field label { font-size: .875rem; font-weight: var(--w-medium); line-height: var(--lh-snug); }
+  .form-field label b { color: #8b3d2e; }
+  .form-field label span { color: var(--c-ink-soft); font-weight: var(--w-regular); }
+  .form-field input, .form-field textarea { width: 100%; padding: .85rem 1rem; border: var(--rule-hair) solid #cbd0c8; border-radius: 6px; background: white; color: var(--c-ink); font: inherit; font-size: 1rem; line-height: 1.4; }
+  .form-field input:focus-visible, .form-field textarea:focus-visible { border-color: var(--c-ink); outline: var(--focus-ring) solid var(--c-focus); outline-offset: 1px; }
+  .form-field textarea { resize: vertical; min-height: 9rem; }
+  .form-field textarea::placeholder { color: var(--c-ink-soft); }
+  .form-foot { display: flex; align-items: center; justify-content: space-between; gap: var(--space-5); padding-top: var(--space-2); }
+  .form-privacy { max-width: 29rem; color: var(--c-ink-soft); font-size: .8125rem; }
+  .form-submit { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-4); min-width: 10rem; padding: .9rem 1.2rem; border: 0; border-radius: 6px; background: var(--c-navy); color: var(--c-on-navy); font: inherit; font-weight: var(--w-semibold); cursor: pointer; }
+  .form-submit:hover { background: var(--c-navy-deep); }
+  .form-submit:disabled { cursor: wait; opacity: .72; }
+  .form-submit.is-sending span { animation: send-pulse .8s ease-in-out infinite alternate; }
+  .form-status { min-height: 1.4em; color: var(--c-ink-soft); font-size: .875rem; }
+  .form-status.is-success { color: #285b3c; }
+  .form-status.is-error { color: #8b3d2e; }
+  @keyframes send-pulse { to { transform: translate(3px, -3px); } }
 
-  .contact__direct > * + * { margin-top: var(--space-2); }
-
-  .contact__phone {
-    display: inline-block;
-    color: var(--c-ink);
-    font-family: var(--font-mono);
-    font-size: var(--t-3);
-    font-variant-numeric: tabular-nums;
-    line-height: var(--lh-tight);
-    text-decoration-color: var(--c-accent);
-  }
-
-  .form {
-    display: grid;
-    gap: var(--space-5);
-    padding-top: var(--space-5);
-    border-top: var(--rule-hair) solid var(--c-ink);
-  }
-
-  .form__heading { font-size: var(--t-2); }
-
-  .form__pair {
-    display: grid;
-    gap: var(--space-5);
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  @media (min-width: 45rem) {
-    .form__pair { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  }
-
-  .form__row {
-    display: grid;
-    gap: var(--space-2);
-  }
-
-  label { font-weight: var(--w-medium); line-height: var(--lh-snug); }
-  label .soft { font-weight: var(--w-regular); }
-
-  input,
-  select,
-  textarea {
-    width: 100%;
-    padding: var(--space-3);
-    border: var(--rule-hair) solid var(--c-rule-strong);
-    border-radius: 0;
-    background: var(--c-paper);
-    color: var(--c-ink);
-    font: inherit;
-    line-height: var(--lh-snug);
-  }
-
-  input:hover,
-  select:hover,
-  textarea:hover { border-color: var(--c-ink); }
-
-  input:focus-visible,
-  select:focus-visible,
-  textarea:focus-visible {
-    border-color: var(--c-ink);
-    outline-offset: 0;
-  }
-
-  textarea { resize: vertical; }
-  textarea::placeholder { color: var(--c-ink-soft); }
-
-  .form__fallback {
-    padding-top: var(--space-4);
-    border-top: var(--rule-hair) solid var(--c-rule);
-  }
-
-  .form__fallback .label { margin-bottom: var(--space-1); }
+  @media (min-width: 48rem) { .form-pair { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 68rem) { .contact-layout { grid-template-columns: minmax(0, .82fr) minmax(36rem, 1.18fr); column-gap: clamp(4rem, 8vw, 9rem); } }
+  @media (max-width: 35rem) { .contact-card__head, .contact-form { padding-inline: var(--space-5); } .form-foot { align-items: stretch; flex-direction: column; } .form-submit { width: 100%; } }
 </style>

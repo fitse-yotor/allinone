@@ -50,7 +50,7 @@ const current = stripLocale(Astro.url.pathname);
   const toggle = document.querySelector<HTMLButtonElement>('.header__toggle');
   const nav = document.getElementById('site-nav');
   if (toggle && nav) {
-    const narrow = window.matchMedia('(max-width: 61.99rem)');
+    const narrow = window.matchMedia('(max-width: 69.99rem)');
     const sync = () => {
       toggle.hidden = !narrow.matches;
       if (!narrow.matches) toggle.setAttribute('aria-expanded', 'false');
@@ -178,7 +178,7 @@ const current = stripLocale(Astro.url.pathname);
 
   /* Narrow screens with JavaScript: the list collapses behind the toggle as
      a stacked, ruled list. */
-  @media (max-width: 61.99rem) {
+  @media (max-width: 69.99rem) {
     :global(html.js) .header__toggle[aria-expanded='false'] ~ .header__nav { display: none; }
 
     :global(html.js) .header__nav {
@@ -203,7 +203,7 @@ const current = stripLocale(Astro.url.pathname);
     }
   }
 
-  @media (min-width: 62rem) {
+  @media (min-width: 70rem) {
     .header__bar { flex-wrap: nowrap; }
     .header__nav {
       width: auto;

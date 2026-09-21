@@ -1,5 +1,5 @@
 /*
-  AllInOne Technology: base layer.
+  All In One Cyber Security solution: base layer.
   Reset, typography, controls, focus, print.
   Structure comes from hairline rules and whitespace, never from cards,
   shadows, translucency or coloured borders.
@@ -29,6 +29,34 @@ body {
   font-synthesis-weight: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+}
+
+.site-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: none;
+  place-items: center;
+  background: var(--c-paper);
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 180ms ease, visibility 180ms ease;
+}
+
+.js .site-loader { display: grid; }
+
+.site-loader img {
+  width: min(15rem, 44vw);
+  height: auto;
+}
+
+.site-loader--done {
+  opacity: 0;
+  visibility: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-loader { transition: none; }
 }
 
 h1, h2, h3, h4 {
